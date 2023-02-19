@@ -5,13 +5,13 @@ Id: uuid
 Email: varchar
 Username: varchar
 Password: varchar
-UserType: UserTypeEnum
+UserType: RolesEnum
 CreatedAt: timestampz
 UpdatedAt: timestampz
 DeletedAt: timestampz
 }
 
-enum UserTypeEnum {
+enum RolesEnum {
 Blogger
 Admin
 }
@@ -40,6 +40,6 @@ DeletedAt: timestampz
 Users ||--|{ Blogs
 Users ||--|{ Comments
 Blogs ||--|{ Comments
-UserTypeEnum ||--|{ Users
+RolesEnum ||--|{ Users
 
 @enduml

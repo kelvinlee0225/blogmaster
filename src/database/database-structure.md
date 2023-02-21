@@ -16,7 +16,7 @@ Blogger
 Admin
 }
 
-object Blogs {
+object BlogPosts {
 Id: uuid
 UserId: uuid
 Title: varchar
@@ -37,9 +37,9 @@ UpdatedAt: timestampz
 DeletedAt: timestampz
 }
 
-Users ||--|{ Blogs
+Users ||--|{ BlogPosts
 Users ||--|{ Comments
-Blogs ||--|{ Comments
+BlogPosts ||--|{ Comments
 RolesEnum ||--|{ Users
 
 @enduml

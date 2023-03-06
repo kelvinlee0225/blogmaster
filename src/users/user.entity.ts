@@ -1,5 +1,6 @@
-import { BaseEntity } from '../baseEntity/baseEntity';
 import { Entity, Column } from 'typeorm';
+import { BaseEntity } from '../baseEntity/baseEntity';
+import { UserType } from './enums/user-type-enum';
 
 @Entity()
 export class User extends BaseEntity {
@@ -12,8 +13,12 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column()
-  userType: string;
+  @Column({
+    type: 'enum',
+    enum: UserType,
+    default: UserType.BLOGGER,
+  })
+  userType: UserType;
 
   constructor(email: string, username: string, password: string) {
     super();

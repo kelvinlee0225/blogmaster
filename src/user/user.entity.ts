@@ -16,7 +16,6 @@ export class User extends BaseEntity {
   @Column({
     type: 'enum',
     enum: UserType,
-    default: UserType.BLOGGER,
   })
   userType: UserType;
 

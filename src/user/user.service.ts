@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -14,6 +14,7 @@ export class UsersService {
 
   async create(userDto: UserDto) {
     const newUser = new User(userDto.email, userDto.username, userDto.password);
+    newUser.userType = userDto.userType;
     const createdUser = await this.userRepository.save(newUser);
     return createdUser;
   }

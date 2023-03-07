@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class createUser1678135682372 implements MigrationInterface {
-  name = 'createUser1678135682372';
+export class createUser1678220986464 implements MigrationInterface {
+  name = 'createUser1678220986464';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: 'user',
         columns: [
           {
             name: 'id',
@@ -14,6 +14,7 @@ export class createUser1678135682372 implements MigrationInterface {
             generationStrategy: 'uuid',
             isPrimary: true,
             isNullable: false,
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'createdAt',

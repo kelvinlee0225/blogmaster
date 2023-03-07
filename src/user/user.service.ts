@@ -19,16 +19,42 @@ export class UserService {
     return createdUser;
   }
 
+  async login(username: string, password: string) {
+    try {
+      const foundUser = await this.userRepository.findOne({
+        where: {
+          username: username,
+          password: password,
+        },
+      });
+
+      if (foundUser) return foundUser;
+      return;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async findOne(id: string) {
     const foundUser = await this.userRepository.findOne({ where: { id } });
     return foundUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async update(updateUserDto: UpdateUserDto) {
+    try {
+      const foundUser = await this.userRepository.findOne({
+        where: { id: updateUserDto.id },
+      });
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      if (foundUser) {
+        if (updateUserDto.username) foundUser.username = updateUserDto.username;
+        if (updateUserDto.password) foundUser.password = updateUserDto.password;
+        if (updateUserDto.userType) foundUser.userType = updateUserDto.userType;
+        const updatedUser = await this.userRepository.save(foundUser);
+        return updatedUser;
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

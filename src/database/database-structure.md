@@ -6,9 +6,9 @@ Email: varchar
 Username: varchar
 Password: varchar
 UserType: RolesEnum
-CreatedAt: timestampz
-UpdatedAt: timestampz
-DeletedAt: timestampz
+CreatedAt: timestamptz
+UpdatedAt: timestamptz
+DeletedAt: timestamptz
 }
 
 enum RolesEnum {
@@ -21,9 +21,9 @@ Id: uuid
 UserId: uuid
 Title: varchar
 Description: varchar
-CreatedAt: timestampz
-UpdatedAt: timestampz
-DeletedAt: timestampz
+CreatedAt: timestamptz
+UpdatedAt: timestamptz
+DeletedAt: timestamptz
 }
 
 object Comments {
@@ -32,9 +32,9 @@ UserId: uuid
 BlogId: uuid
 ParentId: uuid
 Description: varchar
-CreatedAt: timestampz
-UpdatedAt: timestampz
-DeletedAt: timestampz
+CreatedAt: timestamptz
+UpdatedAt: timestamptz
+DeletedAt: timestamptz
 }
 
 Users ||--|{ BlogPosts

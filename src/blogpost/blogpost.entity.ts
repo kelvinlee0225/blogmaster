@@ -11,9 +11,16 @@ export class Blogpost extends BaseEntity {
   description: string;
 
   @Column()
-  user_id: string;
+  userId: string;
 
   @ManyToOne(() => User, (user) => user.blogPosts)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: User;
+
+  constructor(title: string, description: string, userId: string) {
+    super();
+    this.title = title;
+    this.description = description;
+    this.userId = userId;
+  }
 }

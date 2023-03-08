@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { BlogpostService } from './blogpost.service';
-import { CreateBlogpostDto } from './dto/create-blogpost.dto';
+import { BlogPostDto } from './dto/blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
 
 @Controller('blogpost')
@@ -8,7 +16,7 @@ export class BlogpostController {
   constructor(private readonly blogpostService: BlogpostService) {}
 
   @Post()
-  create(@Body() createBlogpostDto: CreateBlogpostDto) {
+  create(@Body() createBlogpostDto: BlogPostDto) {
     return this.blogpostService.create(createBlogpostDto);
   }
 
@@ -23,7 +31,10 @@ export class BlogpostController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogpostDto: UpdateBlogpostDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateBlogpostDto: UpdateBlogpostDto,
+  ) {
     return this.blogpostService.update(+id, updateBlogpostDto);
   }
 

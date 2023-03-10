@@ -1,5 +1,5 @@
 export class BlogPostDto {
   title: string;
-  description: string;
+  body: string;
   userId: string;
 }

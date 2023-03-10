@@ -20,7 +20,7 @@ object BlogPosts {
 Id: uuid
 UserId: uuid
 Title: varchar
-Description: varchar
+Body: varchar
 CreatedAt: timestamptz
 UpdatedAt: timestamptz
 DeletedAt: timestamptz

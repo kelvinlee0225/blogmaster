@@ -8,7 +8,7 @@ export class Blogpost extends BaseEntity {
   title: string;
 
   @Column()
-  description: string;
+  body: string;
 
   @Column()
   userId: string;
@@ -17,10 +17,10 @@ export class Blogpost extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  constructor(title: string, description: string, userId: string) {
+  constructor(title: string, body: string, userId: string) {
     super();
     this.title = title;
-    this.description = description;
+    this.body = body;
     this.userId = userId;
   }
 }

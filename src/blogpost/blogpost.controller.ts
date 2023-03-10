@@ -16,30 +16,27 @@ export class BlogpostController {
   constructor(private readonly blogpostService: BlogpostService) {}
 
   @Post()
-  create(@Body() createBlogpostDto: BlogPostDto) {
-    return this.blogpostService.create(createBlogpostDto);
+  async create(@Body() blogPostDto: BlogPostDto) {
+    return await this.blogpostService.create(blogPostDto);
   }
 
   @Get()
-  findAll() {
-    return this.blogpostService.findAll();
+  async findAll() {
+    return await this.blogpostService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blogpostService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.blogpostService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateBlogpostDto: UpdateBlogpostDto,
-  ) {
-    return this.blogpostService.update(+id, updateBlogpostDto);
+  @Patch()
+  async update(@Body() updateBlogpostDto: UpdateBlogpostDto) {
+    return await this.blogpostService.update(updateBlogpostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogpostService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.blogpostService.remove(id);
   }
 }

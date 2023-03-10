@@ -1,26 +1,59 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Blogpost } from './blogpost.entity';
 import { BlogPostDto } from './dto/blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
 
 @Injectable()
 export class BlogpostService {
-  create(createBlogpostDto: BlogPostDto) {
-    return 'This action adds a new blogpost';
+  constructor(
+    @InjectRepository(Blogpost)
+    private blogPostRepository: Repository<Blogpost>,
+  ) {}
+
+  async create(blogPostDto: BlogPostDto) {
+    const newBlogPost = new Blogpost(
+      blogPostDto.title,
+      blogPostDto.body,
+      blogPostDto.userId,
+    );
+    const createdBlogPost = await this.blogPostRepository.save(newBlogPost);
+    return createdBlogPost;
   }
 
-  findAll() {
-    return `This action returns all blogpost`;
+  async findAll() {
+    return await this.blogPostRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} blogpost`;
+  async findOne(id: string) {
+    const foundBlogPost = await this.blogPostRepository.findOneBy({ id });
+    if (foundBlogPost) return foundBlogPost;
+    return;
   }
 
-  update(id: number, updateBlogpostDto: UpdateBlogpostDto) {
-    return `This action updates a #${id} blogpost`;
+  async update(updateBlogpostDto: UpdateBlogpostDto) {
+    try {
+      const foundBlogPost = await this.blogPostRepository.findOneBy({
+        id: updateBlogpostDto.id,
+      });
+      if (foundBlogPost) {
+        if (updateBlogpostDto.title)
+          foundBlogPost.title = updateBlogpostDto.title;
+        if (updateBlogpostDto.body) foundBlogPost.body = updateBlogpostDto.body;
+
+        const updatedBlogPost = await this.blogPostRepository.save(
+          foundBlogPost,
+        );
+        return updatedBlogPost;
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} blogpost`;
+  async remove(id: string) {
+    const deletedBlogPost = await this.blogPostRepository.softDelete({ id });
+    return deletedBlogPost.affected ? true : false;
   }
 }

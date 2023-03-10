@@ -44,7 +44,7 @@ export class createBlogPost1678305248611 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'description',
+            name: 'body',
             type: 'varchar',
             isNullable: false,
           },

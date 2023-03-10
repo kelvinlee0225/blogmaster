@@ -1,6 +1,7 @@
 import { BaseEntity } from '../baseEntity/baseEntity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { User } from 'src/user/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { User } from '../user/user.entity';
+import { Comment } from '../comment/comment.entity';
 
 @Entity()
 export class Blogpost extends BaseEntity {
@@ -16,6 +17,9 @@ export class Blogpost extends BaseEntity {
   @ManyToOne(() => User, (user) => user.blogPosts)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.blogPost)
+  comments: Comment[];
 
   constructor(title: string, body: string, userId: string) {
     super();

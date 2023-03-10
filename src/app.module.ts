@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { dataSourceOptions } from './database/data-source';
 import { UserModule } from './user/user.module';
 import { BlogpostModule } from './blogpost/blogpost.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { BlogpostModule } from './blogpost/blogpost.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
     BlogpostModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

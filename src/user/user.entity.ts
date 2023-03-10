@@ -1,4 +1,5 @@
-import { Blogpost } from 'src/blogpost/blogpost.entity';
+import { Blogpost } from '../blogpost/blogpost.entity';
+import { Comment } from '../comment/comment.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from '../baseEntity/baseEntity';
 import { UserType } from './enums/user-type-enum';
@@ -22,6 +23,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Blogpost, (blogPost) => blogPost.user)
   blogPosts: Blogpost[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   constructor(email: string, username: string, password: string) {
     super();

@@ -5,13 +5,13 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class createBlogPost1678305248611 implements MigrationInterface {
-  name = 'createBlogPost1678305248611';
+export class createComment1678482378203 implements MigrationInterface {
+  name = 'createComment1678482378203';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'blogpost',
+        name: 'comment',
         columns: [
           {
             name: 'id',
@@ -39,11 +39,6 @@ export class createBlogPost1678305248611 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'title',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
             name: 'body',
             type: 'varchar',
             isNullable: false,
@@ -53,26 +48,62 @@ export class createBlogPost1678305248611 implements MigrationInterface {
             type: 'varchar',
             isNullable: false,
           },
+          {
+            name: 'blogPostId',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'parentId',
+            type: 'varchar',
+            isNullable: true,
+          },
         ],
       }),
     );
 
     await queryRunner.createForeignKey(
-      'blogpost',
+      'comment',
       new TableForeignKey({
         columnNames: ['userId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'user',
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'comment',
+      new TableForeignKey({
+        columnNames: ['blogPostId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'blogpost',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'comment',
+      new TableForeignKey({
+        columnNames: ['parentId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'comment',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('blogpost');
-    const foreignKey = table.foreignKeys.find(
+    const table = await queryRunner.getTable('comment');
+    const userForeignKey = table.foreignKeys.find(
       (fk) => fk.columnNames.indexOf('userId') !== -1,
     );
-    await queryRunner.dropForeignKey(table, foreignKey);
+    const blogPostForeignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('blogPostId') !== -1,
+    );
+    const commentForeignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('childId') !== -1,
+    );
+    await queryRunner.dropForeignKey(table, userForeignKey);
+    await queryRunner.dropForeignKey(table, blogPostForeignKey);
+    await queryRunner.dropForeignKey(table, commentForeignKey);
     await queryRunner.dropTable(table);
   }
 }

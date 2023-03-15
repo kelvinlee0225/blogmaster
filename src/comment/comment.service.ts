@@ -44,6 +44,15 @@ export class CommentService {
   }
 
   async remove(id: string) {
+    const childrenComments = await this.commentRepository.find({
+      where: { parentId: id },
+    });
+    if (childrenComments.length > 0)
+      childrenComments.forEach(
+        async (comment) =>
+          await this.commentRepository.softDelete({ id: comment.id }),
+      );
+
     const deletedComment = await this.commentRepository.softDelete({ id });
     return deletedComment.affected ? true : false;
   }

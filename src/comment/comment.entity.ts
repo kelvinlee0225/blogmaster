@@ -13,7 +13,9 @@ export class Comment extends BaseEntity {
   @ManyToOne(() => Comment, (comment) => comment.children)
   parent: Comment;
 
-  @OneToMany(() => Comment, (comment) => comment.parent)
+  @OneToMany(() => Comment, (comment) => comment.parent, {
+    cascade: ['soft-remove'],
+  })
   children: Comment[];
 
   @Column()

@@ -14,9 +14,9 @@ export class CommentService {
 
   async create(commentDto: CommentDto) {
     const newComment = new Comment(
-      commentDto.description,
+      commentDto.body,
       commentDto.userId,
-      commentDto.blogId,
+      commentDto.blogPostId,
     );
     if (commentDto.parentId) newComment.parentId = commentDto.parentId;
     const createdComment = await this.commentRepository.save(newComment);
@@ -34,7 +34,7 @@ export class CommentService {
       });
 
       if (foundComment) {
-        foundComment.description = updateCommentDto.description;
+        foundComment.body = updateCommentDto.body;
         const updatedComment = this.commentRepository.save(foundComment);
         return updatedComment;
       }

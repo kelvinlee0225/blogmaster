@@ -1,17 +1,22 @@
 import { BaseEntity } from '../baseEntity/baseEntity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Blogpost } from '../blogpost/blogpost.entity';
 
 @Entity()
 export class Comment extends BaseEntity {
   @Column()
-  description: string;
+  body: string;
 
   @Column()
   parentId: string;
+  @ManyToOne(() => Comment, (comment) => comment.childComments)
+  parentComment: Comment;
+
   @Column()
-  parent: Comment;
+  childId: string;
+  @OneToMany(() => Comment, (comment) => comment.parentComment)
+  childComments: Comment[];
 
   @Column()
   userId: string;
@@ -19,14 +24,14 @@ export class Comment extends BaseEntity {
   user: User;
 
   @Column()
-  blogId: string;
+  blogPostId: string;
   @ManyToOne(() => Blogpost, (blogPost) => blogPost.comments)
   blogPost: Blogpost;
 
-  constructor(description: string, userId: string, blogId: string) {
+  constructor(body: string, userId: string, blogPostId: string) {
     super();
-    this.description = description;
+    this.body = body;
     this.userId = userId;
-    this.blogId = blogId;
+    this.blogPostId = blogPostId;
   }
 }

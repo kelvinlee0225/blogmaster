@@ -1,6 +1,6 @@
 export class CommentDto {
-  description: string;
+  body: string;
   parentId: string;
   userId: string;
-  blogId: string;
+  blogPostId: string;
 }

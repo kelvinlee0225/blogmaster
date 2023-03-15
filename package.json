@@ -22,7 +22,8 @@
     "migration:create": "cd ./src/database/migrations && typeorm migration:create",
     "migration:generate": "yarn typeorm migration:generate -d dist/database/data-source.js",
     "migration:run": "yarn typeorm migration:run -d dist/database/data-source.js",
-    "migration:rever": "yarn typeorm migration:revert -d dist/database/data-source.js"
+    "migration:rever": "yarn typeorm migration:revert -d dist/database/data-source.js",
+    "schema:drop": "yarn typeorm schema:drop -d dist/database/data-source.js"
   },
   "dependencies": {
     "@nestjs/common": "^9.3.9",

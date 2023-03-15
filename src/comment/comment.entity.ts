@@ -10,13 +10,11 @@ export class Comment extends BaseEntity {
 
   @Column()
   parentId: string;
-  @ManyToOne(() => Comment, (comment) => comment.childComments)
-  parentComment: Comment;
+  @ManyToOne(() => Comment, (comment) => comment.children)
+  parent: Comment;
 
-  @Column()
-  childId: string;
-  @OneToMany(() => Comment, (comment) => comment.parentComment)
-  childComments: Comment[];
+  @OneToMany(() => Comment, (comment) => comment.parent)
+  children: Comment[];
 
   @Column()
   userId: string;

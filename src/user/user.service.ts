@@ -13,10 +13,18 @@ export class UserService {
   ) {}
 
   async create(userDto: UserDto) {
-    const newUser = new User(userDto.email, userDto.username, userDto.password);
-    newUser.userType = userDto.userType;
-    const createdUser = await this.userRepository.save(newUser);
-    return createdUser;
+    try {
+      const newUser = new User(
+        userDto.email,
+        userDto.username,
+        userDto.password,
+      );
+      newUser.userType = userDto.userType;
+      const createdUser = await this.userRepository.save(newUser);
+      return createdUser;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async login(username: string, password: string) {

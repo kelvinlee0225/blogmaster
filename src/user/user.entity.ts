@@ -6,10 +6,10 @@ import { UserType } from './enums/user-type-enum';
 
 @Entity()
 export class User extends BaseEntity {
-  @Column()
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
   username: string;
 
   @Column()

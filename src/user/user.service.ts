@@ -27,7 +27,7 @@ export class UserService {
     }
   }
 
-  async login(username: string, password: string) {
+  async signIn(username: string, password: string) {
     try {
       const foundUser = await this.userRepository.findOne({
         where: {

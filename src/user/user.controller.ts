@@ -8,13 +8,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async register(@Body() createUserDto: UserDto) {
+  async signUp(@Body() createUserDto: UserDto) {
     return await this.userService.create(createUserDto);
   }
 
   @Post('login')
-  async login(@Body() dto: { username: string; password: string }) {
-    return await this.userService.login(dto.username, dto.password);
+  async signIn(@Body() dto: { username: string; password: string }) {
+    return await this.userService.signIn(dto.username, dto.password);
   }
 
   @Get(':id')

@@ -27,22 +27,6 @@ export class UserService {
     }
   }
 
-  async signIn(username: string, password: string) {
-    try {
-      const foundUser = await this.userRepository.findOne({
-        where: {
-          username: username,
-          password: password,
-        },
-      });
-
-      if (foundUser) return foundUser;
-      return;
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   async findOneById(id: string) {
     const foundUser = await this.userRepository.findOneBy({ id });
     return foundUser;

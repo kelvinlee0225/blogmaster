@@ -21,11 +21,6 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Post('login')
-  async signIn(@Body() dto: { username: string; password: string }) {
-    return await this.userService.signIn(dto.username, dto.password);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOneById(@Param('id') id: string) {

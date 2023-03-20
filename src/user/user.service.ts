@@ -43,8 +43,22 @@ export class UserService {
     }
   }
 
-  async findOne(id: string) {
-    const foundUser = await this.userRepository.findOne({ where: { id } });
+  async findOneById(id: string) {
+    const foundUser = await this.userRepository.findOneBy({ id });
+    return foundUser;
+  }
+
+  async findOne({
+    id,
+    email,
+    username,
+  }: Pick<Partial<UpdateUserDto>, 'id' | 'email' | 'username'>) {
+    const whereParams = {};
+    if (id) whereParams['id'] = id;
+    if (email) whereParams['email'] = email;
+    if (username) whereParams['username'] = username;
+
+    const foundUser = await this.userRepository.findOne({ where: whereParams });
     return foundUser;
   }
 

@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -17,9 +26,10 @@ export class UserController {
     return await this.userService.signIn(dto.username, dto.password);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.userService.findOne(id);
+  async findOneById(@Param('id') id: string) {
+    return await this.userService.findOneById(id);
   }
 
   @Patch()

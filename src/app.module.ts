@@ -5,6 +5,7 @@ import { dataSourceOptions } from './database/data-source';
 import { UserModule } from './user/user.module';
 import { BlogpostModule } from './blogpost/blogpost.module';
 import { CommentModule } from './comment/comment.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CommentModule } from './comment/comment.module';
     UserModule,
     BlogpostModule,
     CommentModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

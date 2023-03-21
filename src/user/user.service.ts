@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { UnprocessableEntityException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class UserService {
@@ -14,16 +16,23 @@ export class UserService {
 
   async create(userDto: UserDto) {
     try {
-      const newUser = new User(
-        userDto.email,
-        userDto.username,
-        userDto.password,
-      );
+      const user = await this.findOne({
+        email: userDto.email,
+        username: userDto.username,
+      });
+      if (!!user)
+        throw new UnprocessableEntityException(
+          `The email or username is already taken`,
+        );
+
+      const hashedPassword = await bcrypt.hash(userDto.password, 10);
+      const newUser = new User(userDto.email, userDto.username, hashedPassword);
       newUser.userType = userDto.userType;
       const createdUser = await this.userRepository.save(newUser);
       return createdUser;
     } catch (err) {
       console.error(err);
+      return err.message;
     }
   }
 

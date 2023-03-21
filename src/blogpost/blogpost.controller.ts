@@ -6,7 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { BlogpostService } from './blogpost.service';
 import { BlogPostDto } from './dto/blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
@@ -15,6 +17,7 @@ import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
 export class BlogpostController {
   constructor(private readonly blogpostService: BlogpostService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() blogPostDto: BlogPostDto) {
     return await this.blogpostService.create(blogPostDto);
@@ -30,11 +33,13 @@ export class BlogpostController {
     return await this.blogpostService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch()
   async update(@Body() updateBlogpostDto: UpdateBlogpostDto) {
     return await this.blogpostService.update(updateBlogpostDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.blogpostService.remove(id);

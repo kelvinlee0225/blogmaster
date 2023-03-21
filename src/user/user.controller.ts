@@ -27,6 +27,7 @@ export class UserController {
     return await this.userService.findOneById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch()
   update(@Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(updateUserDto);

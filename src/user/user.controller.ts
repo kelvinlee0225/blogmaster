@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Request,
   Patch,
@@ -41,6 +42,22 @@ export class UserController {
 
     if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
       return await this.userService.update(updateUserDto);
+
+    throw new ForbiddenException({
+      statusCode: 403,
+      message:
+        'Forbidden. You have the be the author of the account or an admin.',
+    });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Request() req) {
+    const foundUser = await this.findOneById(id);
+
+    if (!foundUser) throw new NotFoundException();
+
+    if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
+      return await this.userService.delete(id);
 
     throw new ForbiddenException({
       statusCode: 403,

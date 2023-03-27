@@ -72,4 +72,17 @@ export class UserService {
       console.error(err);
     }
   }
+
+  async delete(id: string) {
+    try {
+      const foundUser = await this.userRepository.find({
+        where: { id },
+        relations: ['blogPosts'],
+      });
+      const deletedUser = await this.userRepository.softRemove(foundUser);
+      return deletedUser.length > 0 ? true : false;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }

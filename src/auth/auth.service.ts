@@ -19,11 +19,15 @@ export class AuthService {
       const { password, ...result } = user;
       return result;
     }
-    return new NotAcceptableException('The username and password do not match');
+    throw new NotAcceptableException('The username and password do not match');
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id };
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      userType: user.userType,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

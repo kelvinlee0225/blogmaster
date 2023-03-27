@@ -1,7 +1,7 @@
 import { Blogpost } from '../blogpost/blogpost.entity';
 import { Comment } from '../comment/comment.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
-import { BaseEntity } from '../baseEntity/baseEntity';
+import { BaseEntity } from '../base/base-entity';
 import { UserType } from './enums/user-type-enum';
 
 @Entity()

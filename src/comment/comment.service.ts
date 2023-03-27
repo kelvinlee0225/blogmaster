@@ -27,6 +27,12 @@ export class CommentService {
     return await this.commentRepository.find();
   }
 
+  async findOne(id: string) {
+    const foundComment = await this.commentRepository.findOneBy({ id });
+    if (foundComment) return foundComment;
+    return;
+  }
+
   async update(updateCommentDto: UpdateCommentDto) {
     try {
       const foundComment = await this.commentRepository.findOneBy({

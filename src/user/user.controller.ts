@@ -38,8 +38,6 @@ export class UserController {
   async update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
     const foundUser = await this.findOneById(updateUserDto.id);
 
-    if (!foundUser) throw new NotFoundException();
-
     if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
       return await this.userService.update(updateUserDto);
 
@@ -53,8 +51,6 @@ export class UserController {
   @Delete(':id')
   async delete(@Param('id') id: string, @Request() req) {
     const foundUser = await this.findOneById(id);
-
-    if (!foundUser) throw new NotFoundException();
 
     if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
       return await this.userService.delete(id);

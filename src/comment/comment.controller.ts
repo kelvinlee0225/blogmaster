@@ -38,8 +38,6 @@ export class CommentController {
   async update(@Body() updateCommentDto: UpdateCommentDto, @Request() req) {
     const foundComment = await this.commentService.findOne(updateCommentDto.id);
 
-    if (!foundComment) throw new NotFoundException();
-
     if (
       foundComment.userId === req.user.id ||
       req.user.userType === UserType.ADMIN
@@ -56,8 +54,6 @@ export class CommentController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
     const foundComment = await this.commentService.findOne(id);
-
-    if (!foundComment) throw new NotFoundException();
 
     if (
       foundComment.userId === req.user.id ||

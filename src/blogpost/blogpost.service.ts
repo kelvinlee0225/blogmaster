@@ -27,28 +27,22 @@ export class BlogpostService {
   }
 
   async findOne(id: string) {
-    const foundBlogPost = await this.blogPostRepository.findOneBy({ id });
+    const foundBlogPost = await this.blogPostRepository.findOneByOrFail({ id });
     if (foundBlogPost) return foundBlogPost;
     return;
   }
 
   async update(updateBlogpostDto: UpdateBlogpostDto) {
-    try {
-      const foundBlogPost = await this.blogPostRepository.findOneBy({
-        id: updateBlogpostDto.id,
-      });
-      if (foundBlogPost) {
-        if (updateBlogpostDto.title)
-          foundBlogPost.title = updateBlogpostDto.title;
-        if (updateBlogpostDto.body) foundBlogPost.body = updateBlogpostDto.body;
+    const foundBlogPost = await this.blogPostRepository.findOneByOrFail({
+      id: updateBlogpostDto.id,
+    });
+    if (foundBlogPost) {
+      if (updateBlogpostDto.title)
+        foundBlogPost.title = updateBlogpostDto.title;
+      if (updateBlogpostDto.body) foundBlogPost.body = updateBlogpostDto.body;
 
-        const updatedBlogPost = await this.blogPostRepository.save(
-          foundBlogPost,
-        );
-        return updatedBlogPost;
-      }
-    } catch (err) {
-      console.error(err);
+      const updatedBlogPost = await this.blogPostRepository.save(foundBlogPost);
+      return updatedBlogPost;
     }
   }
 

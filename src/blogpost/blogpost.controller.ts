@@ -44,8 +44,6 @@ export class BlogpostController {
   async update(@Body() updateBlogpostDto: UpdateBlogpostDto, @Request() req) {
     const foundBlogPost = await this.findOne(updateBlogpostDto.id);
 
-    if (!foundBlogPost) throw new NotFoundException();
-
     if (
       foundBlogPost.userId === req.user.id ||
       req.user.userType === UserType.ADMIN
@@ -62,8 +60,6 @@ export class BlogpostController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
     const foundBlogPost = await this.findOne(id);
-
-    if (!foundBlogPost) throw new NotFoundException();
 
     if (
       foundBlogPost.userId === req.user.id ||

@@ -28,24 +28,20 @@ export class CommentService {
   }
 
   async findOne(id: string) {
-    const foundComment = await this.commentRepository.findOneBy({ id });
+    const foundComment = await this.commentRepository.findOneByOrFail({ id });
     if (foundComment) return foundComment;
     return;
   }
 
   async update(updateCommentDto: UpdateCommentDto) {
-    try {
-      const foundComment = await this.commentRepository.findOneBy({
-        id: updateCommentDto.id,
-      });
+    const foundComment = await this.commentRepository.findOneByOrFail({
+      id: updateCommentDto.id,
+    });
 
-      if (foundComment) {
-        foundComment.body = updateCommentDto.body;
-        const updatedComment = this.commentRepository.save(foundComment);
-        return updatedComment;
-      }
-    } catch (err) {
-      console.error(err);
+    if (foundComment) {
+      foundComment.body = updateCommentDto.body;
+      const updatedComment = this.commentRepository.save(foundComment);
+      return updatedComment;
     }
   }
 

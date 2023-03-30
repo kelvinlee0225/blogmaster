@@ -12,7 +12,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.findOne({ username });
-    if (!user) new NotAcceptableException('Could not find the user');
+
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (user && validPassword) {

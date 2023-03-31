@@ -19,12 +19,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    let message = (exception as any).message;
+    let message = (exception as any).response
+      ? (exception as any).response.message // `response.message` is a value provided by the `class-validator`
+      : (exception as any).message;
     let detail = (exception as any).detail;
     let code = 'HttpException';
 
     Logger.error(
-      detail ? detail : message, //since exception.stack already shows the error message, so `detail` will replace the first line if it exists
+      detail ? detail : message, //since `exception.stack` already shows the error message, so `detail` will replace the first line if it exists
       (exception as any).stack,
       `${request.method} ${request.url}`,
     );

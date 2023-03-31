@@ -1,19 +1,24 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { UserType } from '../enums/user-type-enum';
 
 export class UserDto {
+  @ApiProperty({ type: String, required: true })
   @IsEmail({}, { message: 'Incorrect email' })
-  @IsNotEmpty({ message: 'The email is required' })
+  @IsNotEmpty()
   email: string;
 
+  @ApiProperty({ type: String, required: true })
   @IsString()
-  @IsNotEmpty({ message: 'The username is required' })
+  @IsNotEmpty()
   username: string;
 
+  @ApiProperty({ type: String, required: true })
   @IsString()
-  @IsNotEmpty({ message: 'The password is required' })
+  @IsNotEmpty()
   password: string;
 
+  @ApiProperty({ enum: UserType, required: true })
   @IsEnum(UserType)
   @IsNotEmpty()
   userType: UserType;

@@ -8,7 +8,6 @@ import {
   Patch,
   Param,
   UseGuards,
-  NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -17,7 +16,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { ISPUBLIC } from '../common/decorator';
 import { UserType } from './enums/user-type-enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {

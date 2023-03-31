@@ -23,9 +23,9 @@ export class AuthService {
     throw new NotAcceptableException('The username and password do not match');
   }
 
-  async login(user: any) {
+  async login(username: string, _password: string, user: any) {
     const payload = {
-      username: user.username,
+      username,
       sub: user.id,
       userType: user.userType,
     };

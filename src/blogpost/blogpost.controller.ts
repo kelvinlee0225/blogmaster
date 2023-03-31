@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Request,
-  NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
 import { ISPUBLIC } from '../common/decorator';

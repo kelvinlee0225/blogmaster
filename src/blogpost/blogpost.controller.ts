@@ -16,7 +16,9 @@ import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { BlogpostService } from './blogpost.service';
 import { BlogPostDto } from './dto/blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('BlogPost')
 @UseGuards(JwtAuthGuard)
 @Controller('blogpost')
 export class BlogpostController {

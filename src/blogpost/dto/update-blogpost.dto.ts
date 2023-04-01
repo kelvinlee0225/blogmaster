@@ -1,8 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID } from 'class-validator';
-import { BlogPostDto } from './blogpost.dto';
+import { CreateBlogPostDto } from './create-blogpost.dto';
 
-export class UpdateBlogpostDto extends PartialType(BlogPostDto) {
+export class UpdateBlogpostDto extends PartialType(CreateBlogPostDto) {
   @ApiProperty({ type: String, required: true })
   @IsUUID()
   @IsNotEmpty()

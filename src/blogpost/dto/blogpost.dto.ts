@@ -1,19 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
+import { User } from '../../user/user.entity';
+import { CreateBlogPostDto } from './create-blogpost.dto';
+import { UpdateBlogpostDto } from './update-blogpost.dto';
 
-export class BlogPostDto {
-  @ApiProperty({ type: String, required: true })
-  @IsString()
-  @IsNotEmpty()
-  title: string;
+class extendedDto extends PickType(UpdateBlogpostDto, ['id'] as const) {}
 
-  @ApiProperty({ type: String, required: true })
-  @IsString()
+export class BlogPostDto extends IntersectionType(
+  CreateBlogPostDto,
+  extendedDto,
+) {
+  @ApiProperty({ type: User, required: true })
+  @ValidateNested()
   @IsNotEmpty()
-  body: string;
-
-  @ApiProperty({ type: String, required: true })
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
+  user: Pick<User, 'id' | 'username' | 'email' | 'userType'>;
 }

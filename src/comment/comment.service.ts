@@ -13,7 +13,7 @@ export class CommentService {
     private commentRepository: Repository<Comment>,
   ) {}
 
-  async create(commentDto: CreateCommentDto) {
+  async create(commentDto: CreateCommentDto): Promise<CommentDto> {
     const newComment = new Comment(
       commentDto.body,
       commentDto.userId,
@@ -21,7 +21,7 @@ export class CommentService {
     );
     if (commentDto.parentId) newComment.parentId = commentDto.parentId;
     const createdComment = await this.commentRepository.save(newComment);
-    return createdComment;
+    if (createdComment) return CommentMapper.mapToDto(createdComment);
   }
 
   async findAll(page: number, limit: number): Promise<Pagination<CommentDto>> {
@@ -42,28 +42,28 @@ export class CommentService {
     );
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<CommentDto> {
     const foundComment = await this.commentRepository.findOneOrFail({
       where: { id },
       relations: ['user'],
     });
-    if (foundComment) return foundComment;
+    if (foundComment) return CommentMapper.mapToDto(foundComment);
     return;
   }
 
-  async update(updateCommentDto: UpdateCommentDto) {
+  async update(updateCommentDto: UpdateCommentDto): Promise<CommentDto> {
     const foundComment = await this.commentRepository.findOneByOrFail({
       id: updateCommentDto.id,
     });
 
     if (foundComment) {
       foundComment.body = updateCommentDto.body;
-      const updatedComment = this.commentRepository.save(foundComment);
-      return updatedComment;
+      const updatedComment = await this.commentRepository.save(foundComment);
+      return CommentMapper.mapToDto(updatedComment);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<boolean> {
     const parent = await this.commentRepository.find({
       where: { id },
       relations: ['children'],

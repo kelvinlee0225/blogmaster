@@ -19,7 +19,7 @@ import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Comment')
 @UseGuards(JwtAuthGuard)
@@ -27,6 +27,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @ApiBearerAuth('access-token')
   @Post()
   async create(@Body() commentDto: CreateCommentDto) {
     return await this.commentService.create(commentDto);
@@ -41,6 +42,7 @@ export class CommentController {
     return await this.commentService.findAll(page, limit);
   }
 
+  @ApiBearerAuth('access-token')
   @Patch()
   async update(@Body() updateCommentDto: UpdateCommentDto, @Request() req) {
     const foundComment = await this.commentService.findOne(updateCommentDto.id);
@@ -58,6 +60,7 @@ export class CommentController {
     });
   }
 
+  @ApiBearerAuth('access-token')
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
     const foundComment = await this.commentService.findOne(id);

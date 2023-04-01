@@ -13,14 +13,14 @@ export class BlogpostService {
     private blogPostRepository: Repository<Blogpost>,
   ) {}
 
-  async create(blogPostDto: CreateBlogPostDto) {
+  async create(blogPostDto: CreateBlogPostDto): Promise<BlogPostDto> {
     const newBlogPost = new Blogpost(
       blogPostDto.title,
       blogPostDto.body,
       blogPostDto.userId,
     );
     const createdBlogPost = await this.blogPostRepository.save(newBlogPost);
-    return createdBlogPost;
+    if (createdBlogPost) return BlogPostMapper.mapToDto(createdBlogPost);
   }
 
   async findAll(page: number, limit: number): Promise<Pagination<BlogPostDto>> {
@@ -41,16 +41,16 @@ export class BlogpostService {
     );
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<BlogPostDto> {
     const foundBlogPost = await this.blogPostRepository.findOneOrFail({
       where: { id },
       relations: ['user'],
     });
-    if (foundBlogPost) return foundBlogPost;
+    if (foundBlogPost) return BlogPostMapper.mapToDto(foundBlogPost);
     return;
   }
 
-  async update(updateBlogpostDto: UpdateBlogpostDto) {
+  async update(updateBlogpostDto: UpdateBlogpostDto): Promise<BlogPostDto> {
     const foundBlogPost = await this.blogPostRepository.findOneByOrFail({
       id: updateBlogpostDto.id,
     });
@@ -60,11 +60,11 @@ export class BlogpostService {
       if (updateBlogpostDto.body) foundBlogPost.body = updateBlogpostDto.body;
 
       const updatedBlogPost = await this.blogPostRepository.save(foundBlogPost);
-      return updatedBlogPost;
+      return BlogPostMapper.mapToDto(updatedBlogPost);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<boolean> {
     const deletedBlogPost = await this.blogPostRepository.softDelete({ id });
     return deletedBlogPost.affected ? true : false;
   }

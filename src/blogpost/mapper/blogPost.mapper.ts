@@ -7,12 +7,14 @@ export class BlogPostMapper {
     dto.id = entity.id;
     dto.title = entity.title;
     dto.body = entity.body;
-    dto.user = {
-      id: entity.user.id,
-      username: entity.user.username,
-      email: entity.user.email,
-      userType: entity.user.userType,
-    };
+    if (!!entity.user)
+      dto.user = {
+        id: entity.user.id,
+        username: entity.user.username,
+        email: entity.user.email,
+        userType: entity.user.userType,
+      };
+    else dto.userId = entity.userId;
 
     return dto;
   }

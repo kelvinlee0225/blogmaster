@@ -14,6 +14,17 @@ async function bootstrap() {
     .setTitle('Blogmaster')
     .setDescription('The blogmaster API documentation')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        description: `Please enter token in following format: Bearer <JWT>`,
+        name: 'Authorization',
+        bearerFormat: 'Bearer',
+        scheme: 'Bearer',
+        type: 'http',
+        in: 'Header',
+      },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

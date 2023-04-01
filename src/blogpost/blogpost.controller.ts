@@ -19,7 +19,7 @@ import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { BlogpostService } from './blogpost.service';
 import { CreateBlogPostDto } from './dto/create-blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('BlogPost')
 @UseGuards(JwtAuthGuard)
@@ -27,6 +27,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class BlogpostController {
   constructor(private readonly blogpostService: BlogpostService) {}
 
+  @ApiBearerAuth('access-token')
   @Post()
   async create(@Body() createBlogPostDto: CreateBlogPostDto) {
     return await this.blogpostService.create(createBlogPostDto);
@@ -47,6 +48,7 @@ export class BlogpostController {
     return await this.blogpostService.findOne(id);
   }
 
+  @ApiBearerAuth('access-token')
   @Patch()
   async update(@Body() updateBlogpostDto: UpdateBlogpostDto, @Request() req) {
     const foundBlogPost = await this.findOne(updateBlogpostDto.id);
@@ -64,6 +66,7 @@ export class BlogpostController {
     });
   }
 
+  @ApiBearerAuth('access-token')
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
     const foundBlogPost = await this.findOne(id);

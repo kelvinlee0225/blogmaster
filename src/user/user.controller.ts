@@ -16,7 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { ISPUBLIC } from '../common/decorator';
 import { UserType } from './enums/user-type-enum';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')
 @UseGuards(JwtAuthGuard)
@@ -30,11 +30,13 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
+  @ApiBearerAuth('access-token')
   @Get(':id')
   async findOneById(@Param('id') id: string) {
     return await this.userService.findOneById(id);
   }
 
+  @ApiBearerAuth('access-token')
   @Patch()
   async update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
     const foundUser = await this.findOneById(updateUserDto.id);
@@ -49,6 +51,7 @@ export class UserController {
     });
   }
 
+  @ApiBearerAuth('access-token')
   @Delete(':id')
   async delete(@Param('id') id: string, @Request() req) {
     const foundUser = await this.findOneById(id);

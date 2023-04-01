@@ -9,12 +9,15 @@ import {
   UseGuards,
   Request,
   ForbiddenException,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ISPUBLIC } from '../common/decorator';
 import { UserType } from 'src/user/enums/user-type-enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { BlogpostService } from './blogpost.service';
-import { BlogPostDto } from './dto/blogpost.dto';
+import { CreateBlogPostDto } from './dto/create-blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -25,14 +28,17 @@ export class BlogpostController {
   constructor(private readonly blogpostService: BlogpostService) {}
 
   @Post()
-  async create(@Body() blogPostDto: BlogPostDto) {
-    return await this.blogpostService.create(blogPostDto);
+  async create(@Body() createBlogPostDto: CreateBlogPostDto) {
+    return await this.blogpostService.create(createBlogPostDto);
   }
 
   @ISPUBLIC()
   @Get()
-  async findAll() {
-    return await this.blogpostService.findAll();
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
+  ) {
+    return await this.blogpostService.findAll(page, limit);
   }
 
   @ISPUBLIC()

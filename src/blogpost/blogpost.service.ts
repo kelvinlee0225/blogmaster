@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { Blogpost } from './blogpost.entity';
-import { BlogPostDto } from './dto/blogpost.dto';
-import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
+import { BlogPostMapper } from './mapper/blogPost.mapper';
+import { CreateBlogPostDto, UpdateBlogpostDto, BlogPostDto } from './dto';
 
 @Injectable()
 export class BlogpostService {
@@ -12,7 +13,7 @@ export class BlogpostService {
     private blogPostRepository: Repository<Blogpost>,
   ) {}
 
-  async create(blogPostDto: BlogPostDto) {
+  async create(blogPostDto: CreateBlogPostDto) {
     const newBlogPost = new Blogpost(
       blogPostDto.title,
       blogPostDto.body,
@@ -22,12 +23,29 @@ export class BlogpostService {
     return createdBlogPost;
   }
 
-  async findAll() {
-    return await this.blogPostRepository.find();
+  async findAll(page: number, limit: number): Promise<Pagination<BlogPostDto>> {
+    const foundBlogPosts = await paginate(
+      this.blogPostRepository,
+      {
+        limit: limit,
+        page: page,
+      },
+      {
+        relations: ['user'],
+      },
+    );
+
+    return new Pagination(
+      BlogPostMapper.mapToDtoArray(foundBlogPosts.items),
+      foundBlogPosts.meta,
+    );
   }
 
   async findOne(id: string) {
-    const foundBlogPost = await this.blogPostRepository.findOneByOrFail({ id });
+    const foundBlogPost = await this.blogPostRepository.findOneOrFail({
+      where: { id },
+      relations: ['user'],
+    });
     if (foundBlogPost) return foundBlogPost;
     return;
   }

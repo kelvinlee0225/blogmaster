@@ -24,11 +24,14 @@ export class CommentService {
   }
 
   async findAll() {
-    return await this.commentRepository.find();
+    return await this.commentRepository.findAndCount();
   }
 
   async findOne(id: string) {
-    const foundComment = await this.commentRepository.findOneByOrFail({ id });
+    const foundComment = await this.commentRepository.findOneOrFail({
+      where: { id },
+      relations: ['user'],
+    });
     if (foundComment) return foundComment;
     return;
   }

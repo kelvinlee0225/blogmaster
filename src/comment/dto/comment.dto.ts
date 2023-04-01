@@ -1,24 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { User } from '../../user/user.entity';
+import { UpdateCommentDto } from './update-comment.dto';
+import { CreateCommentDto } from './create-comment.dto';
+import { Comment } from '../comment.entity';
 
-export class CommentDto {
-  @ApiProperty({ type: String, required: true })
-  @IsString()
-  @IsNotEmpty()
-  body: string;
+class extendedDto extends PickType(UpdateCommentDto, ['id'] as const) {}
 
-  @ApiProperty({ type: String, required: false })
-  @IsUUID()
+export class CommentDto extends IntersectionType(
+  CreateCommentDto,
+  extendedDto,
+) {
+  @ApiProperty({ type: User, required: false })
+  @ValidateNested()
   @IsOptional()
-  parentId: string;
+  user: Pick<User, 'id' | 'username' | 'email' | 'userType'>;
 
-  @ApiProperty({ type: String, required: true })
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
-
-  @ApiProperty({ type: String, required: true })
-  @IsUUID()
-  @IsNotEmpty()
-  blogPostId: string;
+  @ApiProperty({ type: Comment, required: false })
+  @ValidateNested()
+  @IsOptional()
+  parent: Pick<Comment, 'id' | 'body'>;
 }

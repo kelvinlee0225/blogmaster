@@ -14,6 +14,7 @@ export const blogPostOne: BlogPostDto = {
     email: userOne.email,
     userType: userOne.userType,
   },
+  userId: USER_ONE_ID,
 };
 
 export const blogPostTwo: BlogPostDto = {
@@ -26,4 +27,5 @@ export const blogPostTwo: BlogPostDto = {
     email: userOne.email,
     userType: userOne.userType,
   },
+  userId: USER_ONE_ID,
 };

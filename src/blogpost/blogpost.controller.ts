@@ -14,12 +14,14 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ISPUBLIC } from '../common/decorator';
-import { UserType } from 'src/user/enums/user-type-enum';
+import { UserType } from '../user/enums/user-type-enum';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { BlogpostService } from './blogpost.service';
 import { CreateBlogPostDto } from './dto/create-blogpost.dto';
 import { UpdateBlogpostDto } from './dto/update-blogpost.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { BlogPostDto } from './dto';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags('BlogPost')
 @UseGuards(JwtAuthGuard)
@@ -29,7 +31,9 @@ export class BlogpostController {
 
   @ApiBearerAuth('access-token')
   @Post()
-  async create(@Body() createBlogPostDto: CreateBlogPostDto) {
+  async create(
+    @Body() createBlogPostDto: CreateBlogPostDto,
+  ): Promise<BlogPostDto> {
     return await this.blogpostService.create(createBlogPostDto);
   }
 
@@ -38,19 +42,22 @@ export class BlogpostController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
-  ) {
+  ): Promise<Pagination<BlogPostDto, IPaginationMeta>> {
     return await this.blogpostService.findAll(page, limit);
   }
 
   @ISPUBLIC()
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<BlogPostDto> {
     return await this.blogpostService.findOne(id);
   }
 
   @ApiBearerAuth('access-token')
   @Patch()
-  async update(@Body() updateBlogpostDto: UpdateBlogpostDto, @Request() req) {
+  async update(
+    @Body() updateBlogpostDto: UpdateBlogpostDto,
+    @Request() req,
+  ): Promise<BlogPostDto> {
     const foundBlogPost = await this.findOne(updateBlogpostDto.id);
 
     if (
@@ -68,7 +75,7 @@ export class BlogpostController {
 
   @ApiBearerAuth('access-token')
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req) {
+  async remove(@Param('id') id: string, @Request() req): Promise<boolean> {
     const foundBlogPost = await this.findOne(id);
 
     if (

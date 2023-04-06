@@ -9,6 +9,8 @@ import { Blogpost } from '../blogpost.entity';
 import { repositoryMock, requestMock } from '../../common/mock-data';
 import { USER_TWO_ID } from '../../user/constant';
 import { ForbiddenException } from '@nestjs/common';
+import { CommentService } from '../../comment/comment.service';
+import { Comment } from '../../comment/comment.entity';
 
 describe('BlogpostController', () => {
   let controller: BlogpostController;
@@ -19,8 +21,13 @@ describe('BlogpostController', () => {
       controllers: [BlogpostController],
       providers: [
         BlogpostService,
+        CommentService,
         {
           provide: getRepositoryToken(Blogpost),
+          useValue: repositoryMock,
+        },
+        {
+          provide: getRepositoryToken(Comment),
           useValue: repositoryMock,
         },
       ],

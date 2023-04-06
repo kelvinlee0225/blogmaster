@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
-import { CommentDto, CreateCommentDto, UpdateCommentDto } from './dto';
+import {
+  CommentDto,
+  CreateCommentDto,
+  FindCommentDto,
+  UpdateCommentDto,
+} from './dto';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { CommentMapper } from './mapper/comment.mapper';
 
@@ -28,8 +33,8 @@ export class CommentService {
     const foundComments = await paginate(
       this.commentRepository,
       {
-        limit: limit,
-        page: page,
+        limit,
+        page,
       },
       {
         relations: ['user'],
@@ -49,6 +54,31 @@ export class CommentService {
     });
     if (foundComment) return CommentMapper.mapToDto(foundComment);
     return;
+  }
+
+  async findCommentIds(dto: FindCommentDto) {
+    const whereParams = {};
+    if (dto.userId) whereParams['userId'] = dto.userId;
+    if (dto.blogPostId) whereParams['blogPostId'] = dto.blogPostId;
+    if (dto.parentId) whereParams['parentId'] = dto.parentId;
+    dto.limit = !!dto.limit ? dto.limit : 15;
+    dto.page = !!dto.page ? dto.page : 1;
+
+    const foundComments = await paginate(
+      this.commentRepository,
+      {
+        limit: dto.limit,
+        page: dto.page,
+      },
+      {
+        where: whereParams,
+      },
+    );
+
+    return {
+      ids: foundComments.items.map((comment) => comment.id),
+      meta: foundComments.meta,
+    };
   }
 
   async update(updateCommentDto: UpdateCommentDto): Promise<CommentDto> {

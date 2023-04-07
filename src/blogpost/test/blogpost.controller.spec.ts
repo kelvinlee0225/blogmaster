@@ -60,44 +60,50 @@ describe('BlogpostController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create a blog post with the given parameters', async () => {
-    const expected: BlogPostDto = { ...blogPostOne };
+  describe('create', () => {
+    it('should create a blog post with the given parameters', async () => {
+      const expected: BlogPostDto = { ...blogPostOne };
 
-    const result = await controller.create({
-      body: blogPostOne.body,
-      title: blogPostOne.title,
-      userId: blogPostOne.user.id,
+      const result = await controller.create({
+        body: blogPostOne.body,
+        title: blogPostOne.title,
+        userId: blogPostOne.user.id,
+      });
+
+      expect(result).toEqual(expected);
     });
-
-    expect(result).toEqual(expected);
   });
 
-  it('should find the first and the only 2 blogposts', async () => {
-    const expected: Pagination<BlogPostDto, IPaginationMeta> = {
-      items: [blogPostOne, blogPostTwo],
-      meta: {
-        itemCount: 2,
-        totalItems: 2,
-        itemsPerPage: 2,
-        totalPages: 1,
-        currentPage: 1,
-      },
-    };
+  describe('findAll', () => {
+    it('should find the first and the only 2 blogposts', async () => {
+      const expected: Pagination<BlogPostDto, IPaginationMeta> = {
+        items: [blogPostOne, blogPostTwo],
+        meta: {
+          itemCount: 2,
+          totalItems: 2,
+          itemsPerPage: 2,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
 
-    const result = await controller.findAll(1, 2);
+      const result = await controller.findAll(1, 2);
 
-    expect(result).toEqual(expected);
+      expect(result).toEqual(expected);
+    });
   });
 
-  it('should find a blogpost with the given id', async () => {
-    const expected: BlogPostDto = { ...blogPostOne };
+  describe('findOne', () => {
+    it('should find a blogpost with the given id', async () => {
+      const expected: BlogPostDto = { ...blogPostOne };
 
-    const result = await controller.findOne(blogPostOne.id);
+      const result = await controller.findOne(blogPostOne.id);
 
-    expect(result).toEqual(expected);
+      expect(result).toEqual(expected);
+    });
   });
 
-  describe('Update', () => {
+  describe('update', () => {
     it('should update a blog post and return the updated blog post', async () => {
       const spyFindOne = jest.spyOn(controller, 'findOne');
       spyFindOne.mockImplementation(async () => blogPostOne);
@@ -150,8 +156,8 @@ describe('BlogpostController', () => {
     });
   });
 
-  describe('Delete', () => {
-    it('should delete a blog post returning true as a response', async () => {
+  describe('remove', () => {
+    it('should remove a blog post returning true as a response', async () => {
       const spyFindOne = jest.spyOn(controller, 'findOne');
       spyFindOne.mockImplementation(async () => blogPostOne);
 

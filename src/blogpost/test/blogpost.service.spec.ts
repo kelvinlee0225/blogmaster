@@ -134,22 +134,24 @@ describe('BlogpostService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a blogpost with the given parameters', async () => {
-    const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
-    mapperSpy.mockImplementationOnce(() => blogPostOne);
+  describe('create', () => {
+    it('should create a blogpost with the given parameters', async () => {
+      const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
+      mapperSpy.mockImplementationOnce(() => blogPostOne);
 
-    const expected: BlogPostDto = { ...blogPostOne };
+      const expected: BlogPostDto = { ...blogPostOne };
 
-    const result = await service.create({
-      title: blogPostOne.title,
-      body: blogPostOne.body,
-      userId: blogPostOne.userId,
+      const result = await service.create({
+        title: blogPostOne.title,
+        body: blogPostOne.body,
+        userId: blogPostOne.userId,
+      });
+
+      expect(result).toEqual(expected);
     });
-
-    expect(result).toEqual(expected);
   });
 
-  describe('FindAll', () => {
+  describe('findAll', () => {
     it('should return paginated blog posts with the given parameters', async () => {
       const result = await service.findAll(1, 10);
       expect(result).toEqual({
@@ -179,7 +181,7 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('FindOne', () => {
+  describe('findOne', () => {
     it('should find a blogpost with the given id', async () => {
       const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
       mapperSpy.mockImplementation(() => blogPostOne);
@@ -244,7 +246,7 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('Remove', () => {
+  describe('remove', () => {
     it('should return true with the given id', async () => {
       const result = await service.remove(blogPostOne.id);
 

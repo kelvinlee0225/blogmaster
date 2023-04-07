@@ -14,13 +14,33 @@ import { Comment } from '../../comment/comment.entity';
 
 describe('BlogpostController', () => {
   let controller: BlogpostController;
-  let blogPostService: BlogpostService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BlogpostController],
       providers: [
-        BlogpostService,
+        {
+          provide: BlogpostService,
+          useValue: {
+            create: jest.fn().mockImplementation(() => blogPostOne),
+            findAll: jest.fn().mockImplementation(() => ({
+              items: [blogPostOne, blogPostTwo],
+              meta: {
+                itemCount: 2,
+                totalItems: 2,
+                itemsPerPage: 2,
+                totalPages: 1,
+                currentPage: 1,
+              },
+            })),
+            findOne: jest.fn().mockImplementation(() => blogPostOne),
+            update: jest.fn().mockImplementation(() => blogPostOne),
+            remove: jest.fn().mockImplementation((id) => {
+              if (id === blogPostOne.id) return true;
+              return false;
+            }),
+          },
+        },
         CommentService,
         {
           provide: getRepositoryToken(Blogpost),
@@ -34,7 +54,6 @@ describe('BlogpostController', () => {
     }).compile();
 
     controller = module.get<BlogpostController>(BlogpostController);
-    blogPostService = module.get<BlogpostService>(BlogpostService);
   });
 
   it('should be defined', () => {
@@ -42,9 +61,6 @@ describe('BlogpostController', () => {
   });
 
   it('should create a blog post with the given parameters', async () => {
-    const spyFindAll = jest.spyOn(blogPostService, 'create');
-    spyFindAll.mockImplementation(async () => blogPostOne);
-
     const expected: BlogPostDto = { ...blogPostOne };
 
     const result = await controller.create({
@@ -57,20 +73,6 @@ describe('BlogpostController', () => {
   });
 
   it('should find the first and the only 2 blogposts', async () => {
-    const spyFindAll = jest.spyOn(blogPostService, 'findAll');
-    spyFindAll.mockImplementation(async () => {
-      return {
-        items: [blogPostOne, blogPostTwo],
-        meta: {
-          itemCount: 2,
-          totalItems: 2,
-          itemsPerPage: 2,
-          totalPages: 1,
-          currentPage: 1,
-        },
-      };
-    });
-
     const expected: Pagination<BlogPostDto, IPaginationMeta> = {
       items: [blogPostOne, blogPostTwo],
       meta: {
@@ -88,9 +90,6 @@ describe('BlogpostController', () => {
   });
 
   it('should find a blogpost with the given id', async () => {
-    const spyFindAll = jest.spyOn(blogPostService, 'findOne');
-    spyFindAll.mockImplementation(async () => blogPostOne);
-
     const expected: BlogPostDto = { ...blogPostOne };
 
     const result = await controller.findOne(blogPostOne.id);
@@ -98,11 +97,8 @@ describe('BlogpostController', () => {
     expect(result).toEqual(expected);
   });
 
-  describe('Update endpoint', () => {
+  describe('Update', () => {
     it('should update a blog post and return the updated blog post', async () => {
-      const spyUpdate = jest.spyOn(blogPostService, 'update');
-      spyUpdate.mockImplementation(async () => blogPostOne);
-
       const spyFindOne = jest.spyOn(controller, 'findOne');
       spyFindOne.mockImplementation(async () => blogPostOne);
 
@@ -154,11 +150,8 @@ describe('BlogpostController', () => {
     });
   });
 
-  describe('Delete endpoint', () => {
+  describe('Delete', () => {
     it('should delete a blog post returning true as a response', async () => {
-      const remove = jest.spyOn(blogPostService, 'remove');
-      remove.mockImplementation(async () => true);
-
       const spyFindOne = jest.spyOn(controller, 'findOne');
       spyFindOne.mockImplementation(async () => blogPostOne);
 

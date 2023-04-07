@@ -149,7 +149,7 @@ describe('BlogpostService', () => {
     expect(result).toEqual(expected);
   });
 
-  describe('method findAll', () => {
+  describe('FindAll', () => {
     it('should return paginated blog posts with the given parameters', async () => {
       const result = await service.findAll(1, 10);
       expect(result).toEqual({
@@ -179,7 +179,7 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('method findOne', () => {
+  describe('FindOne', () => {
     it('should find a blogpost with the given id', async () => {
       const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
       mapperSpy.mockImplementation(() => blogPostOne);
@@ -210,7 +210,7 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('update method', () => {
+  describe('Update', () => {
     it('should update a blogpost with the given parameters', async () => {
       const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
       mapperSpy.mockReturnValue({ ...blogPostOne });
@@ -244,7 +244,7 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('remove method', () => {
+  describe('Remove', () => {
     it('should return true with the given id', async () => {
       const result = await service.remove(blogPostOne.id);
 

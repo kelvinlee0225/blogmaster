@@ -1,8 +1,10 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID } from 'class-validator';
-import { UserDto } from './create-user.dto';
+import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto extends PartialType(UserDto) {
+export class UpdateUserDto extends PartialType(
+  PickType(CreateUserDto, ['email', 'username', 'password'] as const),
+) {
   @ApiProperty({ type: String, required: true })
   @IsUUID()
   @IsNotEmpty()

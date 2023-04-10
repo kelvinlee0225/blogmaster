@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserMapper } from './mapper';
 
 @Injectable()
 export class UserService {
@@ -13,12 +14,12 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(userDto: UserDto) {
+  async create(userDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(userDto.password, 10);
     const newUser = new User(userDto.email, userDto.username, hashedPassword);
     newUser.userType = userDto.userType;
     const createdUser = await this.userRepository.save(newUser);
-    return createdUser;
+    return UserMapper.mapToDto(createdUser);
   }
 
   async findOneById(id: string) {
@@ -39,7 +40,7 @@ export class UserService {
     const foundUser = await this.userRepository.findOneOrFail({
       where: whereParams,
     });
-    return foundUser;
+    return UserMapper.mapToDto(foundUser);
   }
 
   async update(updateUserDto: UpdateUserDto) {
@@ -48,11 +49,11 @@ export class UserService {
     });
 
     if (foundUser) {
+      if (updateUserDto.email) foundUser.email = updateUserDto.email;
       if (updateUserDto.username) foundUser.username = updateUserDto.username;
       if (updateUserDto.password) foundUser.password = updateUserDto.password;
-      if (updateUserDto.userType) foundUser.userType = updateUserDto.userType;
       const updatedUser = await this.userRepository.save(foundUser);
-      return updatedUser;
+      return UserMapper.mapToDto(updatedUser);
     }
   }
 

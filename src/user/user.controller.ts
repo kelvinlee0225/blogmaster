@@ -11,7 +11,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { ISPUBLIC } from '../common/decorator';
@@ -26,7 +26,7 @@ export class UserController {
 
   @ISPUBLIC()
   @Post()
-  async signUp(@Body() createUserDto: UserDto) {
+  async signUp(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 

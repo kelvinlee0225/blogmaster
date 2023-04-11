@@ -12,7 +12,7 @@ import {
   FindManyOptions,
   UpdateResult,
 } from 'typeorm';
-import { BlogPostDto } from '../dto';
+import { BlogPostDto, CreateBlogPostDto, UpdateBlogpostDto } from '../dto';
 import { BlogPostMapper } from '../mapper/blogPost.mapper';
 import {
   IPaginationLinks,
@@ -22,6 +22,7 @@ import {
 import { CommentService } from '../../comment/comment.service';
 import { Comment } from '../../comment/comment.entity';
 import { commentOne, commentTwo } from '../../comment/constant';
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn().mockImplementation(
@@ -58,6 +59,7 @@ jest.mock('nestjs-typeorm-paginate', () => ({
 
 describe('BlogpostService', () => {
   let service: BlogpostService;
+  let repository: Repository<Blogpost>;
   let commentService: CommentService;
 
   beforeEach(async () => {
@@ -128,6 +130,7 @@ describe('BlogpostService', () => {
     }).compile();
 
     service = module.get<BlogpostService>(BlogpostService);
+    repository = module.get(getRepositoryToken(Blogpost));
     commentService = module.get<CommentService>(CommentService);
   });
 
@@ -142,42 +145,78 @@ describe('BlogpostService', () => {
 
       const expected: BlogPostDto = { ...blogPostOne };
 
-      const result = await service.create({
+      const createDto: CreateBlogPostDto = {
         title: blogPostOne.title,
         body: blogPostOne.body,
         userId: blogPostOne.userId,
-      });
+      };
 
+      const result = await service.create(createDto);
+
+      expect(repository.save).toHaveBeenLastCalledWith(createDto);
+      expect(mapperSpy).toHaveBeenLastCalledWith(blogPostOne);
       expect(result).toEqual(expected);
     });
   });
 
   describe('findAll', () => {
     it('should return paginated blog posts with the given parameters', async () => {
+      const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDtoArray');
+      mapperSpy.mockImplementationOnce(() => [blogPostOne, blogPostTwo]);
+
+      const paginationMeta: IPaginationMeta = {
+        totalItems: 2,
+        itemCount: 2,
+        itemsPerPage: 10,
+        totalPages: 1,
+        currentPage: 1,
+      };
+
       const result = await service.findAll(1, 10);
+
+      expect(paginate).toHaveBeenLastCalledWith(
+        repository,
+        { limit: 10, page: 1 },
+        { relations: ['user'] },
+      );
+      expect(mapperSpy).toHaveBeenLastCalledWith([blogPostOne, blogPostTwo]);
+      expect(Pagination).toHaveBeenLastCalledWith(
+        [blogPostOne, blogPostTwo],
+        paginationMeta,
+      );
       expect(result).toEqual({
         items: [blogPostOne, blogPostTwo],
-        meta: {
-          totalItems: 2,
-          itemCount: 2,
-          itemsPerPage: 10,
-          totalPages: 1,
-          currentPage: 1,
-        },
+        meta: paginationMeta,
       });
     });
 
     it('should only return paginated blog posts, but only the second blogpost', async () => {
+      const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDtoArray');
+      mapperSpy.mockImplementationOnce(() => [blogPostTwo]);
+
+      const paginationMeta: IPaginationMeta = {
+        totalItems: 2,
+        itemCount: 2,
+        itemsPerPage: 1,
+        totalPages: 2,
+        currentPage: 2,
+      };
+
       const result = await service.findAll(2, 1);
+
+      expect(paginate).toHaveBeenLastCalledWith(
+        repository,
+        { limit: 1, page: 2 },
+        { relations: ['user'] },
+      );
+      expect(mapperSpy).toHaveBeenLastCalledWith([blogPostTwo]);
+      expect(Pagination).toHaveBeenLastCalledWith(
+        [blogPostTwo],
+        paginationMeta,
+      );
       expect(result).toEqual({
         items: [blogPostTwo],
-        meta: {
-          totalItems: 2,
-          itemCount: 2,
-          itemsPerPage: 1,
-          totalPages: 2,
-          currentPage: 2,
-        },
+        meta: paginationMeta,
       });
     });
   });
@@ -191,6 +230,11 @@ describe('BlogpostService', () => {
 
       const result = await service.findOne(blogPostOne.id);
 
+      expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+        where: { id: blogPostOne.id },
+        relations: ['user'],
+      });
+      expect(mapperSpy).toHaveBeenLastCalledWith(blogPostOne);
       expect(result).toEqual(expected);
     });
 
@@ -213,18 +257,26 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('Update', () => {
+  describe('update', () => {
     it('should update a blogpost with the given parameters', async () => {
       const mapperSpy = jest.spyOn(BlogPostMapper, 'mapToDto');
       mapperSpy.mockReturnValue({ ...blogPostOne });
 
       const expected: BlogPostDto = { ...blogPostOne };
-      const result = await service.update({
+
+      const updateDto: UpdateBlogpostDto = {
         id: blogPostOne.id,
         title: blogPostOne.title,
         body: blogPostOne.body,
-      });
+      };
 
+      const result = await service.update(updateDto);
+
+      expect(repository.findOneByOrFail).toHaveBeenLastCalledWith({
+        id: blogPostOne.id,
+      });
+      expect(repository.save).toHaveBeenLastCalledWith(blogPostOne);
+      expect(mapperSpy).toHaveBeenLastCalledWith(blogPostOne);
       expect(result).toEqual(expected);
     });
 
@@ -251,6 +303,7 @@ describe('BlogpostService', () => {
     it('should return true with the given id', async () => {
       const result = await service.remove(blogPostOne.id);
 
+      expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
       expect(result).toEqual(true);
     });
 
@@ -279,12 +332,14 @@ describe('BlogpostService', () => {
 
       const result = await service.remove(blogPostOne.id);
 
+      expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
       expect(result).toEqual(true);
     });
 
     it('should return false with the given id', async () => {
       const result = await service.remove('123');
 
+      expect(repository.softDelete).toHaveBeenLastCalledWith('123');
       expect(result).toEqual(false);
     });
   });

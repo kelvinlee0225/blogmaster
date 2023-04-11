@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommentService } from '../comment.service';
-import { Repository } from 'typeorm';
 import { Comment } from '../comment.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMock } from '../../common/mock-data';
 
 describe('CommentService', () => {
   let service: CommentService;
-  let repository: Repository<Comment>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +19,6 @@ describe('CommentService', () => {
     }).compile();
 
     service = module.get<CommentService>(CommentService);
-    repository = await module.get(getRepositoryToken(Comment));
   });
 
   it('should be defined', () => {

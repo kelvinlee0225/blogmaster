@@ -14,10 +14,10 @@ export class CommentDto extends IntersectionType(
   @ApiProperty({ type: User, required: false })
   @ValidateNested()
   @IsOptional()
-  user: Pick<User, 'id' | 'username' | 'email' | 'userType'>;
+  user?: Pick<User, 'id' | 'username' | 'email' | 'userType'>;
 
   @ApiProperty({ type: Comment, required: false })
   @ValidateNested()
   @IsOptional()
-  parent: Pick<Comment, 'id' | 'body'>;
+  parent?: Pick<Comment, 'id' | 'body'>;
 }

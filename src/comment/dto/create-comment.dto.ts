@@ -10,7 +10,7 @@ export class CreateCommentDto {
   @ApiProperty({ type: String, required: false })
   @IsUUID()
   @IsOptional()
-  parentId: string;
+  parentId?: string;
 
   @ApiProperty({ type: String, required: true })
   @IsUUID()

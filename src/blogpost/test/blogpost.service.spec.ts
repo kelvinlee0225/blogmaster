@@ -21,6 +21,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { CommentService } from '../../comment/comment.service';
 import { Comment } from '../../comment/comment.entity';
+import { commentOne, commentTwo } from '../../comment/constant';
 
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn().mockImplementation(
@@ -68,7 +69,7 @@ describe('BlogpostService', () => {
           useValue: {
             findCommentIds: jest.fn().mockImplementation(() => {
               return {
-                ids: [blogPostOne.id, blogPostTwo.id],
+                ids: [commentOne.id, commentTwo.id],
                 meta: {
                   totalItems: 2,
                   itemCount: 2,
@@ -256,7 +257,7 @@ describe('BlogpostService', () => {
     it('should return true with the given id, and deleting more than 15 comments', async () => {
       const findCommentsSpy = jest.spyOn(commentService, 'findCommentIds');
       findCommentsSpy.mockResolvedValueOnce({
-        ids: [].fill(blogPostOne.id),
+        ids: [].fill(commentOne.id, 0, 14),
         meta: {
           totalItems: 16,
           itemCount: 15,

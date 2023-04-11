@@ -6,7 +6,7 @@ import {
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './update-user.dto';
 import { CreateUserDto } from './create-user.dto';
-import { IsDate, IsNotEmpty } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UserDto extends IntersectionType(
   PickType(UpdateUserDto, ['id'] as const),
@@ -26,4 +26,9 @@ export class UserDto extends IntersectionType(
   @IsDate()
   @IsNotEmpty()
   deletedAt?: Date;
+
+  @ApiProperty({ type: String, required: false })
+  @IsString()
+  @IsOptional()
+  password?: string;
 }

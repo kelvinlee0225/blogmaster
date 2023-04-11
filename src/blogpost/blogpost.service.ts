@@ -6,6 +6,7 @@ import { Blogpost } from './blogpost.entity';
 import { BlogPostMapper } from './mapper/blogPost.mapper';
 import { CreateBlogPostDto, UpdateBlogpostDto, BlogPostDto } from './dto';
 import { CommentService } from '../comment/comment.service';
+import { FindBlogPostDto } from './dto/find-blogpost.dto';
 
 @Injectable()
 export class BlogpostService {
@@ -49,6 +50,31 @@ export class BlogpostService {
       relations: ['user'],
     });
     return BlogPostMapper.mapToDto(foundBlogPost);
+  }
+
+  async findBlogPostsIds(dto: FindBlogPostDto) {
+    const whereParams = {};
+    if (dto.userId) whereParams['userId'] = dto.userId;
+    if (dto.title) whereParams['title'] = dto.title;
+    if (dto.body) whereParams['body'] = dto.body;
+    dto.limit = !!dto.limit ? dto.limit : 15;
+    dto.page = !!dto.page ? dto.page : 1;
+
+    const foundBlogPosts = await paginate(
+      this.blogPostRepository,
+      {
+        limit: dto.limit,
+        page: dto.page,
+      },
+      {
+        where: whereParams,
+      },
+    );
+
+    return {
+      ids: foundBlogPosts.items.map((blogPost) => blogPost.id),
+      meta: foundBlogPosts.meta,
+    };
   }
 
   async update(updateBlogpostDto: UpdateBlogpostDto): Promise<BlogPostDto> {

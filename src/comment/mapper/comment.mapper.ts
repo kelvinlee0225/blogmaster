@@ -23,6 +23,8 @@ export class CommentMapper {
         userType: entity.user.userType,
       };
     else dto.userId = entity.userId;
+    dto.createdAt = entity.createdAt;
+    dto.updatedAt = entity.updatedAt;
 
     return dto;
   }

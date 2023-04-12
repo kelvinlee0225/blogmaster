@@ -3,6 +3,7 @@ import { IsOptional, IsUUID, ValidateNested } from 'class-validator';
 import { User } from '../../user/user.entity';
 import { CreateBlogPostDto } from './create-blogpost.dto';
 import { UpdateBlogpostDto } from './update-blogpost.dto';
+import { BaseDto } from '../../common/base';
 
 class extendedCreateDto extends PickType(CreateBlogPostDto, [
   'body',
@@ -13,6 +14,7 @@ class extendedUpdateDto extends PickType(UpdateBlogpostDto, ['id'] as const) {}
 export class BlogPostDto extends IntersectionType(
   extendedCreateDto,
   extendedUpdateDto,
+  BaseDto,
 ) {
   @ApiProperty({ type: User, required: false })
   @ValidateNested()

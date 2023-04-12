@@ -89,7 +89,7 @@ export class BlogpostService {
     return BlogPostMapper.mapToDto(updatedBlogPost);
   }
 
-  async remove(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const deletedBlogPost = await this.blogPostRepository.softDelete(id);
 
     if (deletedBlogPost.affected > 0) {
@@ -115,7 +115,7 @@ export class BlogpostService {
 
       if (toBeDeletedCommentsId.length > 0) {
         for (let i = 0; i < toBeDeletedCommentsId.length; i++)
-          this.commentService.remove(toBeDeletedCommentsId[i]);
+          this.commentService.delete(toBeDeletedCommentsId[i]);
       }
       return true;
     }

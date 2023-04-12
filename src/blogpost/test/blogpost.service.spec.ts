@@ -82,7 +82,7 @@ describe('BlogpostService', () => {
                 },
               };
             }),
-            remove: jest.fn().mockImplementation(() => true),
+            delete: jest.fn().mockImplementation(() => true),
           },
         },
         {
@@ -372,9 +372,9 @@ describe('BlogpostService', () => {
     });
   });
 
-  describe('remove', () => {
+  describe('delete', () => {
     it('should return true with the given id', async () => {
-      const result = await service.remove(blogPostOne.id);
+      const result = await service.delete(blogPostOne.id);
 
       expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
       expect(result).toEqual(true);
@@ -403,14 +403,14 @@ describe('BlogpostService', () => {
         },
       });
 
-      const result = await service.remove(blogPostOne.id);
+      const result = await service.delete(blogPostOne.id);
 
       expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
       expect(result).toEqual(true);
     });
 
     it('should return false with the given id', async () => {
-      const result = await service.remove('123');
+      const result = await service.delete('123');
 
       expect(repository.softDelete).toHaveBeenLastCalledWith('123');
       expect(result).toEqual(false);

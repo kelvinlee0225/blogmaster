@@ -33,7 +33,7 @@ describe('CommentController', () => {
             })),
             findOne: jest.fn().mockImplementation(() => commentOne),
             update: jest.fn().mockImplementation(() => commentOne),
-            remove: jest.fn().mockImplementation(() => true),
+            delete: jest.fn().mockImplementation(() => true),
           },
         },
         {
@@ -138,8 +138,8 @@ describe('CommentController', () => {
     });
   });
 
-  describe('remove', () => {
-    it('should remove a comment returning true as a response', async () => {
+  describe('delete', () => {
+    it('should delete a comment returning true as a response', async () => {
       const request = {
         ...requestMock(),
         user: {
@@ -148,7 +148,7 @@ describe('CommentController', () => {
         },
       };
 
-      const result = await controller.remove(commentOne.id, request);
+      const result = await controller.delete(commentOne.id, request);
 
       expect(result).toEqual(true);
     });
@@ -164,7 +164,7 @@ describe('CommentController', () => {
           },
         };
 
-        await controller.remove(commentOne.id, request);
+        await controller.delete(commentOne.id, request);
       } catch (e) {
         expect(e).toEqual(
           new ForbiddenException({

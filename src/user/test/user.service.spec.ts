@@ -50,7 +50,7 @@ describe('UserService', () => {
                 },
               };
             }),
-            remove: jest.fn().mockImplementation(() => true),
+            delete: jest.fn().mockImplementation(() => true),
           },
         },
         {

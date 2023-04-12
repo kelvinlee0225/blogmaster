@@ -88,7 +88,7 @@ export class UserService {
 
       if (toBeDeletedBlogPostsId.length > 0) {
         for (let i = 0; i < toBeDeletedBlogPostsId.length; i++)
-          this.blogPostService.remove(toBeDeletedBlogPostsId[i]);
+          this.blogPostService.delete(toBeDeletedBlogPostsId[i]);
       }
       return true;
     }

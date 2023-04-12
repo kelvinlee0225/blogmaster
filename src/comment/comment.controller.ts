@@ -58,14 +58,14 @@ export class CommentController {
 
   @ApiBearerAuth('access-token')
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req) {
+  async delete(@Param('id') id: string, @Request() req) {
     const foundComment = await this.commentService.findOne(id);
 
     if (
       foundComment.userId === req.user.id ||
       req.user.userType === UserType.ADMIN
     )
-      return await this.commentService.remove(id);
+      return await this.commentService.delete(id);
 
     throw new ForbiddenException({
       statusCode: 403,

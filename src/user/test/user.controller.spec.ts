@@ -103,7 +103,7 @@ describe('UserController', () => {
   });
 
   describe('delete', () => {
-    it('should remove an account returning true as a response', async () => {
+    it('should delete an account returning true as a response', async () => {
       const request = {
         ...requestMock(),
         user: {

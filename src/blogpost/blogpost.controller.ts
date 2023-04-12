@@ -77,14 +77,14 @@ export class BlogpostController {
 
   @ApiBearerAuth('access-token')
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req): Promise<boolean> {
+  async delete(@Param('id') id: string, @Request() req): Promise<boolean> {
     const foundBlogPost = await this.blogpostService.findOne(id);
 
     if (
       foundBlogPost.userId === req.user.id ||
       req.user.userType === UserType.ADMIN
     )
-      return await this.blogpostService.remove(id);
+      return await this.blogpostService.delete(id);
 
     throw new ForbiddenException({
       statusCode: 403,

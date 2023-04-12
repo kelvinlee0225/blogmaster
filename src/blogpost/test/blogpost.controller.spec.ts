@@ -35,7 +35,7 @@ describe('BlogpostController', () => {
             })),
             findOne: jest.fn().mockImplementation(() => blogPostOne),
             update: jest.fn().mockImplementation(() => blogPostOne),
-            remove: jest.fn().mockImplementation((id) => {
+            delete: jest.fn().mockImplementation((id) => {
               if (id === blogPostOne.id) return true;
               return false;
             }),
@@ -150,8 +150,8 @@ describe('BlogpostController', () => {
     });
   });
 
-  describe('remove', () => {
-    it('should remove a blog post returning true as a response', async () => {
+  describe('delete', () => {
+    it('should delete a blog post returning true as a response', async () => {
       const request = {
         ...requestMock(),
         user: {
@@ -160,7 +160,7 @@ describe('BlogpostController', () => {
         },
       };
 
-      const result = await controller.remove(blogPostOne.id, request);
+      const result = await controller.delete(blogPostOne.id, request);
 
       expect(result).toEqual(true);
     });
@@ -176,7 +176,7 @@ describe('BlogpostController', () => {
           },
         };
 
-        await controller.remove(blogPostOne.id, request);
+        await controller.delete(blogPostOne.id, request);
       } catch (e) {
         expect(e).toEqual(
           new ForbiddenException({

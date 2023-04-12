@@ -99,7 +99,7 @@ export class CommentService {
     }
   }
 
-  async remove(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const parent = await this.commentRepository.find({
       where: { id },
       relations: ['children'],

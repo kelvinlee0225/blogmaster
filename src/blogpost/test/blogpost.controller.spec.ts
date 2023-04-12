@@ -105,9 +105,6 @@ describe('BlogpostController', () => {
 
   describe('update', () => {
     it('should update a blog post and return the updated blog post', async () => {
-      const spyFindOne = jest.spyOn(controller, 'findOne');
-      spyFindOne.mockImplementation(async () => blogPostOne);
-
       const request = {
         ...requestMock(),
         user: {
@@ -129,9 +126,6 @@ describe('BlogpostController', () => {
     it('should throw an error for not being the author or an admin', async () => {
       expect.assertions(1);
       try {
-        const spyFindOne = jest.spyOn(controller, 'findOne');
-        spyFindOne.mockImplementation(async () => blogPostOne);
-
         const request = {
           ...requestMock(),
           user: {
@@ -158,9 +152,6 @@ describe('BlogpostController', () => {
 
   describe('remove', () => {
     it('should remove a blog post returning true as a response', async () => {
-      const spyFindOne = jest.spyOn(controller, 'findOne');
-      spyFindOne.mockImplementation(async () => blogPostOne);
-
       const request = {
         ...requestMock(),
         user: {
@@ -177,9 +168,6 @@ describe('BlogpostController', () => {
     it('should throw an error for not being the author or an admin', async () => {
       expect.assertions(1);
       try {
-        const spyFindOne = jest.spyOn(controller, 'findOne');
-        spyFindOne.mockImplementation(async () => blogPostOne);
-
         const request = {
           ...requestMock(),
           user: {

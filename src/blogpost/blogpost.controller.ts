@@ -58,7 +58,9 @@ export class BlogpostController {
     @Body() updateBlogpostDto: UpdateBlogpostDto,
     @Request() req,
   ): Promise<BlogPostDto> {
-    const foundBlogPost = await this.findOne(updateBlogpostDto.id);
+    const foundBlogPost = await this.blogpostService.findOne(
+      updateBlogpostDto.id,
+    );
 
     if (
       foundBlogPost.userId === req.user.id ||
@@ -76,7 +78,7 @@ export class BlogpostController {
   @ApiBearerAuth('access-token')
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req): Promise<boolean> {
-    const foundBlogPost = await this.findOne(id);
+    const foundBlogPost = await this.blogpostService.findOne(id);
 
     if (
       foundBlogPost.userId === req.user.id ||

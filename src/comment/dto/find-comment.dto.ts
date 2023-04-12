@@ -1,17 +1,17 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumberString, IsOptional } from 'class-validator';
 import { UpdateCommentDto } from './update-comment.dto';
 
 export class FindCommentDto extends PartialType(
   PickType(UpdateCommentDto, ['blogPostId', 'userId', 'parentId'] as const),
 ) {
   @ApiProperty({ type: Number, required: false })
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
-  limit?: number;
+  limit?: number | string;
 
   @ApiProperty({ type: Number, required: false })
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
-  page?: number;
+  page?: number | string;
 }

@@ -9,8 +9,6 @@ import {
   Delete,
   UseGuards,
   ForbiddenException,
-  DefaultValuePipe,
-  ParseIntPipe,
   Query,
 } from '@nestjs/common';
 import { ISPUBLIC } from '../common/decorator';
@@ -20,6 +18,7 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FindCommentDto } from './dto';
 
 @ApiTags('Comment')
 @UseGuards(JwtAuthGuard)
@@ -35,11 +34,8 @@ export class CommentController {
 
   @ISPUBLIC()
   @Get()
-  async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
-  ) {
-    return await this.commentService.findAll(page, limit);
+  async findAll(@Query() dto: FindCommentDto) {
+    return await this.commentService.findAll(dto);
   }
 
   @ApiBearerAuth('access-token')

@@ -29,15 +29,21 @@ export class CommentService {
     if (createdComment) return CommentMapper.mapToDto(createdComment);
   }
 
-  async findAll(page: number, limit: number): Promise<Pagination<CommentDto>> {
+  async findAll(dto: FindCommentDto): Promise<Pagination<CommentDto>> {
+    const whereParams = {};
+    if (dto.userId) whereParams['userId'] = dto.userId;
+    if (dto.blogPostId) whereParams['blogPostId'] = dto.blogPostId;
+    if (dto.parentId) whereParams['parentId'] = dto.parentId;
+
     const foundComments = await paginate(
       this.commentRepository,
       {
-        limit,
-        page,
+        limit: +dto.limit ? +dto.limit : 15,
+        page: +dto.page ? +dto.page : 1,
       },
       {
         relations: ['user'],
+        where: whereParams,
       },
     );
 

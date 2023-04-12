@@ -75,7 +75,7 @@ describe('BlogpostController', () => {
   });
 
   describe('findAll', () => {
-    it('should find the first and the only 2 blogposts', async () => {
+    it('should return the only 2 blogposts in paginated form', async () => {
       const expected: Pagination<BlogPostDto, IPaginationMeta> = {
         items: [blogPostOne, blogPostTwo],
         meta: {

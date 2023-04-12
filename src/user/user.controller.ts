@@ -39,7 +39,7 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @Patch()
   async update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
-    const foundUser = await this.findOneById(updateUserDto.id);
+    const foundUser = await this.userService.findOneById(updateUserDto.id);
 
     if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
       return await this.userService.update(updateUserDto);
@@ -54,7 +54,7 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @Delete(':id')
   async delete(@Param('id') id: string, @Request() req) {
-    const foundUser = await this.findOneById(id);
+    const foundUser = await this.userService.findOneById(id);
 
     if (foundUser.id === req.user.id || req.user.userType === UserType.ADMIN)
       return await this.userService.delete(id);

@@ -58,9 +58,6 @@ describe('UserController', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      const spyFindOne = jest.spyOn(controller, 'findOneById');
-      spyFindOne.mockResolvedValue(userOne as User);
-
       const dto: UpdateUserDto = {
         id: userOne.id,
         email: userOne.email,
@@ -81,9 +78,6 @@ describe('UserController', () => {
     it('should throw a ForbiddenException if the user is not the author or an admin', async () => {
       expect.assertions(1);
       try {
-        const spyFindOne = jest.spyOn(controller, 'findOneById');
-        spyFindOne.mockImplementation(async () => userOne as User);
-
         const request = {
           ...requestMock(),
           user: {
@@ -110,9 +104,6 @@ describe('UserController', () => {
 
   describe('delete', () => {
     it('should remove an account returning true as a response', async () => {
-      const spyFindOne = jest.spyOn(controller, 'findOneById');
-      spyFindOne.mockImplementation(async () => userOne as User);
-
       const request = {
         ...requestMock(),
         user: {
@@ -129,9 +120,6 @@ describe('UserController', () => {
     it('should throw an error for not being the author or an admin', async () => {
       expect.assertions(1);
       try {
-        const spyFindOne = jest.spyOn(controller, 'findOneById');
-        spyFindOne.mockImplementation(async () => userOne as User);
-
         const request = {
           ...requestMock(),
           user: {

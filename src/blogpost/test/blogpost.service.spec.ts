@@ -23,6 +23,7 @@ import { CommentService } from '../../comment/comment.service';
 import { Comment } from '../../comment/comment.entity';
 import { commentOne, commentTwo } from '../../comment/constant';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { FindBlogPostDto } from '../dto/find-blogpost.dto';
 
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn().mockImplementation(
@@ -254,6 +255,78 @@ describe('BlogpostService', () => {
           }),
         );
       }
+    });
+  });
+
+  describe('findBlogPostsIds', () => {
+    it('should find a blogpost that match with the given parameters', async () => {
+      const expected = {
+        ids: [blogPostTwo.id],
+        meta: {
+          totalItems: 2,
+          itemCount: 2,
+          itemsPerPage: 1,
+          totalPages: 2,
+          currentPage: 1,
+        },
+      };
+
+      const findDto: FindBlogPostDto = {
+        userId: blogPostTwo.userId,
+        title: blogPostTwo.title,
+        body: blogPostTwo.body,
+        limit: 1,
+        page: 1,
+      };
+
+      const result = await service.findBlogPostsIds(findDto);
+
+      expect(paginate).toHaveBeenLastCalledWith(
+        repository,
+        { limit: findDto.limit, page: findDto.page },
+        {
+          where: {
+            userId: findDto.userId,
+            title: findDto.title,
+            body: findDto.body,
+          },
+        },
+      );
+      expect(result).toEqual(expected);
+    });
+
+    it('should find multiple blogposts that match with the given parameters', async () => {
+      const expected = {
+        ids: [blogPostOne.id, blogPostTwo.id],
+        meta: {
+          totalItems: 2,
+          itemCount: 2,
+          itemsPerPage: 15,
+          totalPages: 1,
+          currentPage: 1,
+        },
+      };
+
+      const findDto: FindBlogPostDto = {
+        userId: blogPostOne.userId,
+        limit: 15,
+        page: 1,
+      };
+
+      const result = await service.findBlogPostsIds(findDto);
+
+      expect(paginate).toHaveBeenLastCalledWith(
+        repository,
+        { limit: findDto.limit, page: findDto.page },
+        {
+          where: {
+            userId: findDto.userId,
+            title: findDto.title,
+            body: findDto.body,
+          },
+        },
+      );
+      expect(result).toEqual(expected);
     });
   });
 

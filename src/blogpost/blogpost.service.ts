@@ -90,35 +90,15 @@ export class BlogpostService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const deletedBlogPost = await this.blogPostRepository.softDelete(id);
+    const foundBlogPost = await this.blogPostRepository.findOneOrFail({
+      where: { id },
+      relations: ['comments'],
+    });
 
-    if (deletedBlogPost.affected > 0) {
-      const toBeDeletedCommentsId = [];
-      let page = 1;
+    const deletedBlogPost = await this.blogPostRepository.softRemove(
+      foundBlogPost,
+    );
 
-      while (true) {
-        const foundComments = await this.commentService.findCommentIds({
-          blogPostId: id,
-          parentId: null,
-          limit: 15,
-          page: page,
-        });
-        toBeDeletedCommentsId.push(...foundComments.ids);
-
-        if (
-          foundComments.meta.totalPages < 1 ||
-          foundComments.meta.currentPage === foundComments.meta.totalPages
-        )
-          break;
-        else page++;
-      }
-
-      if (toBeDeletedCommentsId.length > 0) {
-        for (let i = 0; i < toBeDeletedCommentsId.length; i++)
-          this.commentService.delete(toBeDeletedCommentsId[i]);
-      }
-      return true;
-    }
-    return false;
+    return !!deletedBlogPost.deletedAt ? true : false;
   }
 }

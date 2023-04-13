@@ -21,7 +21,9 @@ export class User extends BaseEntity {
   })
   userType: UserType;
 
-  @OneToMany(() => Blogpost, (blogPost) => blogPost.user)
+  @OneToMany(() => Blogpost, (blogPost) => blogPost.user, {
+    cascade: ['soft-remove'],
+  })
   blogPosts: Blogpost[];
 
   @OneToMany(() => Comment, (comment) => comment.user)

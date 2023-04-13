@@ -64,34 +64,13 @@ export class UserService {
   }
 
   async delete(id: string) {
-    const deletedBlogPost = await this.userRepository.softDelete(id);
+    const foundUser = await this.userRepository.findOneOrFail({
+      where: { id },
+      relations: ['blogPosts', 'blogPosts.comments'],
+    });
 
-    if (deletedBlogPost.affected > 0) {
-      const toBeDeletedBlogPostsId = [];
-      let page = 1;
+    const deletedBlogPost = await this.userRepository.softRemove(foundUser);
 
-      while (true) {
-        const foundBlogPosts = await this.blogPostService.findBlogPostsIds({
-          userId: id,
-          limit: 15,
-          page,
-        });
-        toBeDeletedBlogPostsId.push(...foundBlogPosts.ids);
-
-        if (
-          foundBlogPosts.meta.totalPages < 1 ||
-          foundBlogPosts.meta.currentPage === foundBlogPosts.meta.totalPages
-        )
-          break;
-        else page++;
-      }
-
-      if (toBeDeletedBlogPostsId.length > 0) {
-        for (let i = 0; i < toBeDeletedBlogPostsId.length; i++)
-          this.blogPostService.delete(toBeDeletedBlogPostsId[i]);
-      }
-      return true;
-    }
-    return false;
+    return !!deletedBlogPost.deletedAt ? true : false;
   }
 }

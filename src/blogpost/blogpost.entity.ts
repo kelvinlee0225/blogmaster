@@ -18,7 +18,9 @@ export class Blogpost extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.blogPost)
+  @OneToMany(() => Comment, (comment) => comment.blogPost, {
+    cascade: ['soft-remove'],
+  })
   comments: Comment[];
 
   constructor(title: string, body: string, userId: string) {

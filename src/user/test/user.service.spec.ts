@@ -2,22 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../user.entity';
-import { ServiceMock, repositoryMock } from '../../common/mock-data';
+import { repositoryMock } from '../../common/mock-data';
 import {
   EntityNotFoundError,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
-  UpdateResult,
 } from 'typeorm';
 import { constantUserType, userOne, userTwo } from '../constant';
 import { CreateUserDto } from '../dto';
 import { UserMapper } from '../mapper';
-import { CommentService } from '../../comment/comment.service';
-import { Comment } from '../../comment/comment.entity';
-import { BlogpostService } from '../../blogpost/blogpost.service';
-import { blogPostOne, blogPostTwo } from '../../blogpost/constant';
-import { Blogpost } from '../../blogpost/blogpost.entity';
 import * as bcrypt from 'bcrypt';
 
 jest.mock('bcrypt', () => ({
@@ -29,34 +23,11 @@ jest.mock('bcrypt', () => ({
 describe('UserService', () => {
   let service: UserService;
   let repository: Repository<User>;
-  let blogPostService: BlogpostService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
-        {
-          provide: BlogpostService,
-          useValue: {
-            findBlogPostsIds: jest.fn().mockImplementation(() => {
-              return {
-                ids: [blogPostOne.id, blogPostTwo.id],
-                meta: {
-                  totalItems: 2,
-                  itemCount: 2,
-                  itemsPerPage: 15,
-                  totalPages: 1,
-                  currentPage: 1,
-                },
-              };
-            }),
-            delete: jest.fn().mockImplementation(() => true),
-          },
-        },
-        {
-          provide: CommentService,
-          useValue: ServiceMock,
-        },
         {
           provide: getRepositoryToken(User),
           useValue: {
@@ -77,31 +48,18 @@ describe('UserService', () => {
               ),
             find: jest.fn().mockImplementation(() => [userOne, userTwo]),
             save: jest.fn().mockImplementation(() => userOne),
-            softDelete: jest.fn().mockImplementation((id: string) => {
-              const result: UpdateResult = {
-                generatedMaps: [],
-                raw: {},
-                affected: 1,
-              };
-              if (id === userOne.id) return result;
-              return { ...result, affected: 0 };
+            softRemove: jest.fn().mockImplementation((entity: User) => {
+              if (entity.deletedAt === null)
+                return { ...userOne, deletedAt: new Date() };
+              return entity;
             }),
           },
-        },
-        {
-          provide: getRepositoryToken(Blogpost),
-          useValue: repositoryMock,
-        },
-        {
-          provide: getRepositoryToken(Comment),
-          useValue: repositoryMock,
         },
       ],
     }).compile();
 
     service = module.get<UserService>(UserService);
     repository = await module.get(getRepositoryToken(User));
-    blogPostService = module.get<BlogpostService>(BlogpostService);
   });
 
   describe('create', () => {
@@ -276,44 +234,53 @@ describe('UserService', () => {
     it('should return true with the given id', async () => {
       const result = await service.delete(userOne.id);
 
-      expect(repository.softDelete).toHaveBeenLastCalledWith(userOne.id);
-      expect(result).toEqual(true);
-    });
-
-    it('should return true with the given id, and deleting more than 15 blogPosts', async () => {
-      const findBlogPostsSpy = jest.spyOn(blogPostService, 'findBlogPostsIds');
-      findBlogPostsSpy.mockResolvedValueOnce({
-        ids: [].fill(blogPostOne.id, 0, 14),
-        meta: {
-          totalItems: 16,
-          itemCount: 15,
-          itemsPerPage: 15,
-          totalPages: 2,
-          currentPage: 1,
-        },
+      expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+        where: { id: userOne.id },
+        relations: ['blogPosts', 'blogPosts.comments'],
       });
-      findBlogPostsSpy.mockResolvedValueOnce({
-        ids: [blogPostTwo.id],
-        meta: {
-          totalItems: 16,
-          itemCount: 1,
-          itemsPerPage: 15,
-          totalPages: 2,
-          currentPage: 2,
-        },
-      });
-
-      const result = await service.delete(userOne.id);
-
-      expect(repository.softDelete).toHaveBeenLastCalledWith(userOne.id);
+      expect(repository.softRemove).toHaveBeenLastCalledWith(userOne);
       expect(result).toEqual(true);
     });
 
     it('should return false with the given id', async () => {
-      const result = await service.delete('123');
+      const returnValue = {
+        ...userOne,
+      } as User;
 
-      expect(repository.softDelete).toHaveBeenLastCalledWith('123');
+      const softRemoveSpy = jest.spyOn(repository, 'softRemove');
+      softRemoveSpy.mockImplementationOnce(async () => returnValue);
+
+      const result = await service.delete(userOne.id);
+
+      expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+        where: { id: userOne.id },
+        relations: ['blogPosts', 'blogPosts.comments'],
+      });
+      expect(repository.softRemove).toHaveBeenLastCalledWith(userOne);
       expect(result).toEqual(false);
+    });
+
+    it('should return false with the given id', async () => {
+      expect.assertions(1);
+      try {
+        await service.delete('123');
+
+        expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+          where: { id: '123' },
+          relations: ['blogPosts', 'blogPosts.comments'],
+        });
+      } catch (e) {
+        expect(e).toEqual(
+          new EntityNotFoundError(User, {
+            options: {
+              where: {
+                id: '123',
+              },
+              relations: ['blogPosts', 'blogPosts.comments'],
+            },
+          }),
+        );
+      }
     });
   });
 });

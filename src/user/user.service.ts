@@ -6,14 +6,12 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserMapper } from './mapper';
-import { BlogpostService } from '../blogpost/blogpost.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private blogPostService: BlogpostService,
   ) {}
 
   async create(userDto: CreateUserDto) {

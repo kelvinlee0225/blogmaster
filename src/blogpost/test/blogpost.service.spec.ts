@@ -10,7 +10,6 @@ import {
   Repository,
   FindOptionsWhere,
   FindManyOptions,
-  UpdateResult,
 } from 'typeorm';
 import { BlogPostDto, CreateBlogPostDto, UpdateBlogpostDto } from '../dto';
 import { BlogPostMapper } from '../mapper/blogPost.mapper';
@@ -355,12 +354,8 @@ describe('BlogpostService', () => {
   });
 
   it('should return false with the given id', async () => {
-    const returnValue = {
-      ...blogPostOne,
-    } as Blogpost;
-
     const softRemoveSpy = jest.spyOn(repository, 'softRemove');
-    softRemoveSpy.mockImplementationOnce(async () => returnValue);
+    softRemoveSpy.mockImplementationOnce(async () => blogPostOne as Blogpost);
 
     const result = await service.delete(blogPostOne.id);
 
@@ -372,7 +367,7 @@ describe('BlogpostService', () => {
     expect(result).toEqual(false);
   });
 
-  it('should return false with the given id', async () => {
+  it('should throw an EntityNotFoundError with the given id', async () => {
     expect.assertions(1);
     try {
       await service.delete('123');

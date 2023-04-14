@@ -38,7 +38,7 @@ export class CommentService {
     const foundComments = await paginate(
       this.commentRepository,
       {
-        limit: +dto.limit ? +dto.limit : 15,
+        limit: +dto.limit ? +dto.limit : 20,
         page: +dto.page ? +dto.page : 1,
       },
       {
@@ -58,8 +58,7 @@ export class CommentService {
       where: { id },
       relations: ['user'],
     });
-    if (foundComment) return CommentMapper.mapToDto(foundComment);
-    return;
+    return CommentMapper.mapToDto(foundComment);
   }
 
   async findCommentIds(dto: FindCommentDto) {
@@ -92,19 +91,21 @@ export class CommentService {
       id: updateCommentDto.id,
     });
 
-    if (foundComment) {
-      foundComment.body = updateCommentDto.body;
-      const updatedComment = await this.commentRepository.save(foundComment);
-      return CommentMapper.mapToDto(updatedComment);
-    }
+    foundComment.body = updateCommentDto.body;
+    const updatedComment = await this.commentRepository.save(foundComment);
+    return CommentMapper.mapToDto(updatedComment);
   }
 
   async delete(id: string): Promise<boolean> {
-    const parent = await this.commentRepository.find({
+    const foundBlogPost = await this.commentRepository.findOneOrFail({
       where: { id },
       relations: ['children'],
     });
-    const deletedComment = await this.commentRepository.softRemove(parent);
-    return deletedComment.length > 0 ? true : false;
+
+    const deletedBlogPost = await this.commentRepository.softRemove(
+      foundBlogPost,
+    );
+
+    return !!deletedBlogPost.deletedAt ? true : false;
   }
 }

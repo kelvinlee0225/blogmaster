@@ -15,6 +15,9 @@ export const blogPostOne: BlogPostDto = {
     userType: userOne.userType,
   },
   userId: USER_ONE_ID,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  deletedAt: null,
 };
 
 export const blogPostTwo: BlogPostDto = {
@@ -28,4 +31,7 @@ export const blogPostTwo: BlogPostDto = {
     userType: userOne.userType,
   },
   userId: USER_ONE_ID,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  deletedAt: null,
 };

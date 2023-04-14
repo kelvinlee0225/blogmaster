@@ -19,9 +19,6 @@ import {
   IPaginationMeta,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { CommentService } from '../../comment/comment.service';
-import { Comment } from '../../comment/comment.entity';
-import { commentOne, commentTwo } from '../../comment/constant';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { FindBlogPostDto } from '../dto/find-blogpost.dto';
 
@@ -61,30 +58,11 @@ jest.mock('nestjs-typeorm-paginate', () => ({
 describe('BlogpostService', () => {
   let service: BlogpostService;
   let repository: Repository<Blogpost>;
-  let commentService: CommentService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BlogpostService,
-        {
-          provide: CommentService,
-          useValue: {
-            findCommentIds: jest.fn().mockImplementation(() => {
-              return {
-                ids: [commentOne.id, commentTwo.id],
-                meta: {
-                  totalItems: 2,
-                  itemCount: 2,
-                  itemsPerPage: 15,
-                  totalPages: 1,
-                  currentPage: 1,
-                },
-              };
-            }),
-            delete: jest.fn().mockImplementation(() => true),
-          },
-        },
         {
           provide: getRepositoryToken(Blogpost),
           useValue: {
@@ -112,27 +90,18 @@ describe('BlogpostService', () => {
               .fn()
               .mockImplementation(() => [blogPostOne, blogPostTwo]),
             save: jest.fn().mockImplementation(() => blogPostOne),
-            softDelete: jest.fn().mockImplementation((id: string) => {
-              const result: UpdateResult = {
-                generatedMaps: [],
-                raw: {},
-                affected: 1,
-              };
-              if (id === blogPostOne.id) return result;
-              return { ...result, affected: 0 };
+            softRemove: jest.fn().mockImplementation((entity: Blogpost) => {
+              if (entity.deletedAt === null)
+                return { ...blogPostOne, deletedAt: new Date() };
+              return entity;
             }),
           },
-        },
-        {
-          provide: getRepositoryToken(Comment),
-          useValue: repositoryMock,
         },
       ],
     }).compile();
 
     service = module.get<BlogpostService>(BlogpostService);
     repository = module.get(getRepositoryToken(Blogpost));
-    commentService = module.get<CommentService>(CommentService);
   });
 
   it('should be defined', () => {
@@ -376,44 +345,53 @@ describe('BlogpostService', () => {
     it('should return true with the given id', async () => {
       const result = await service.delete(blogPostOne.id);
 
-      expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
+      expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+        where: { id: blogPostOne.id },
+        relations: ['comments'],
+      });
+      expect(repository.softRemove).toHaveBeenLastCalledWith(blogPostOne);
       expect(result).toEqual(true);
     });
+  });
 
-    it('should return true with the given id, and deleting more than 15 comments', async () => {
-      const findCommentsSpy = jest.spyOn(commentService, 'findCommentIds');
-      findCommentsSpy.mockResolvedValueOnce({
-        ids: [].fill(commentOne.id, 0, 14),
-        meta: {
-          totalItems: 16,
-          itemCount: 15,
-          itemsPerPage: 15,
-          totalPages: 2,
-          currentPage: 1,
-        },
-      });
-      findCommentsSpy.mockResolvedValueOnce({
-        ids: [blogPostTwo.id],
-        meta: {
-          totalItems: 16,
-          itemCount: 1,
-          itemsPerPage: 15,
-          totalPages: 2,
-          currentPage: 2,
-        },
-      });
+  it('should return false with the given id', async () => {
+    const returnValue = {
+      ...blogPostOne,
+    } as Blogpost;
 
-      const result = await service.delete(blogPostOne.id);
+    const softRemoveSpy = jest.spyOn(repository, 'softRemove');
+    softRemoveSpy.mockImplementationOnce(async () => returnValue);
 
-      expect(repository.softDelete).toHaveBeenLastCalledWith(blogPostOne.id);
-      expect(result).toEqual(true);
+    const result = await service.delete(blogPostOne.id);
+
+    expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+      where: { id: blogPostOne.id },
+      relations: ['comments'],
     });
+    expect(repository.softRemove).toHaveBeenLastCalledWith(blogPostOne);
+    expect(result).toEqual(false);
+  });
 
-    it('should return false with the given id', async () => {
-      const result = await service.delete('123');
+  it('should return false with the given id', async () => {
+    expect.assertions(1);
+    try {
+      await service.delete('123');
 
-      expect(repository.softDelete).toHaveBeenLastCalledWith('123');
-      expect(result).toEqual(false);
-    });
+      expect(repository.findOneOrFail).toHaveBeenLastCalledWith({
+        where: { id: '123' },
+        relations: ['comments'],
+      });
+    } catch (e) {
+      expect(e).toEqual(
+        new EntityNotFoundError(Blogpost, {
+          options: {
+            where: {
+              id: '123',
+            },
+            relations: ['comments'],
+          },
+        }),
+      );
+    }
   });
 });

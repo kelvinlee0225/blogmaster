@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Blogpost } from './blogpost.entity';
 import { BlogPostMapper } from './mapper/blogPost.mapper';
 import { CreateBlogPostDto, UpdateBlogpostDto, BlogPostDto } from './dto';
-import { CommentService } from '../comment/comment.service';
 import { FindBlogPostDto } from './dto/find-blogpost.dto';
 
 @Injectable()
@@ -13,7 +12,6 @@ export class BlogpostService {
   constructor(
     @InjectRepository(Blogpost)
     private blogPostRepository: Repository<Blogpost>,
-    private commentService: CommentService,
   ) {}
 
   async create(blogPostDto: CreateBlogPostDto): Promise<BlogPostDto> {

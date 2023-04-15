@@ -4,7 +4,6 @@ import { UserService } from '../user.service';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { userOne, userTwo } from '../constant';
 import { requestMock } from '../../common/mock-data';
-import { User } from '../user.entity';
 import { ForbiddenException } from '@nestjs/common';
 
 describe('UserController', () => {

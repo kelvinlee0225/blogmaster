@@ -20,8 +20,8 @@ export const userOne: constantUserType = {
 export const userTwo: constantUserType = {
   id: USER_TWO_ID,
   email: 'user1@example.com',
-  password: 'user1password',
-  username: 'user1',
+  password: 'user2password',
+  username: 'user2',
   userType: UserType.BLOGGER,
   createdAt: new Date(),
   updatedAt: new Date(),

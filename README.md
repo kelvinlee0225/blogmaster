@@ -20,6 +20,9 @@ If you ever want to Drop all the existing tables in the database, use:
 yarn schema:drop
 ```
 
+## Authentication and Authorization
+For authentication and Authorization, Passport-Local and Passport-Jwt is applied to the API. For this we need a secret key before starting the application, please remember to provide a `Secret Key` for `JWT_SECRETY_KEY` in the `.env` file.
+
 ## Running the app
 
 ```bash

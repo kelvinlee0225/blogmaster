@@ -34,7 +34,7 @@ To be able to access the Swagger documentation, browse to:
 ```bash
 http://localhost:3000/swagger
 ```
-**Kind reminder**: Swagger UI provides a way to authorize in the top left corner after you log in and get your access token. This is important, since some of the endpoints requires authentication before to be called.
+**Kind reminder**: Swagger UI provides a way to authorize in the top right corner after you log in and get your access token. This is important, since some of the endpoints requires authentication before to be called.
 
 ## Test
 Unit tests can be easily ran by using the following command

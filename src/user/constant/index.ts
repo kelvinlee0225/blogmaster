@@ -1,1 +1,1 @@
-export * from './user.constant';
+export * from './user-mock.constant';

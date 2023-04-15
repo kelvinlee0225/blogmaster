@@ -1,2 +1,2 @@
-export * from './access-token-test.constant';
+export * from './access-token-mock.constant';
 export * from './jwt-constant';

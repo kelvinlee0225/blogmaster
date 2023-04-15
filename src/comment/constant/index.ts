@@ -1,1 +1,1 @@
-export * from './comment.constant';
+export * from './comment-mock.constant';

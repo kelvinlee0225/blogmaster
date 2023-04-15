@@ -1,1 +1,1 @@
-export * from './blogPost.constant';
+export * from './blogPost-mock.constant';

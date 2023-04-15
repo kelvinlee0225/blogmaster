@@ -8,7 +8,11 @@ $ yarn install
 ```
 
 ## Database
-The database is PostgreSQL. First, create a database through any administration and development platform of your choice and create a `.env` file with the properties as indicated in the `.env.example` from the `root` directory. Assigning values to the mentioned keys in the `.env` file according to the database you created, we can now establish a connection with the database and run the following command to create tables in it: 
+The database is PostgreSQL. 
+- First, create a database through any administration and development platform of your choice.
+- Create a `.env` file with the properties as indicated in the `.env.example` from the `root` directory.
+- Assign values to the mentioned keys in the `.env` file according to the database you created, so we can now establish a connection with the database.
+- Finally, run the following command to create tables in it:
 
 ```bash
 yarn migration:run

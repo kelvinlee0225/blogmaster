@@ -1,5 +1,5 @@
 # Blogmaster
-This repository contains a basic blog API built with [NestJs](https://nestjs.com/) and PostgreSQL. The API uses TypeORM to interact with the database, Swagger UI for the documentation, which contains an UI presentation of the APIs is user friendly and easy to understand, Jest provided by NestJS out of the box for Unit Testing, and [Passport](https://www.passportjs.org/) for authentication and authorization.
+This repository contains a basic blog API built with [NestJs](https://nestjs.com/) and PostgreSQL. The API uses TypeORM to interact with the database, [Swagger UI](https://swagger.io/tools/swagger-ui/) for the documentation, which contains an UI presentation of the APIs is user friendly and easy to understand, Jest provided by NestJS out of the box for Unit Testing, and [Passport](https://www.passportjs.org/) for authentication and authorization.
 
 ## Installation
 

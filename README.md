@@ -10,11 +10,15 @@ $ yarn install
 ## Database
 The database is PostgreSQL. First, create a database through any administration and development platform of your choice and create a `.env` file with the properties as indicated in the `.env.example` from the `root` directory. Assigning values to the mentioned keys in the `.env` file according to the database you created, we can now establish a connection with the database and run the following command to create tables in it: 
 
-`yarn migration:run`
+```bash
+yarn migration:run
+```
 
 If you ever want to Drop all the existing tables in the database, use: 
 
-`yarn schema:drop`
+```bash
+yarn schema:drop
+```
 
 ## Running the app
 

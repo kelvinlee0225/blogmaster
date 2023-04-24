@@ -1,73 +1,59 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Blogmaster
+This repository contains a basic blog API built with [NestJs](https://nestjs.com/) and PostgreSQL. The API uses TypeORM to interact with the database, [Swagger UI](https://swagger.io/tools/swagger-ui/) for the documentation, which contains an UI presentation of the APIs that is user friendly and easy to understand, Jest provided by NestJS out of the box for Unit Testing, and [Passport](https://www.passportjs.org/) for authentication and authorization.
 
 ## Installation
 
 ```bash
-$ npm install
+$ yarn install
 ```
+
+## Database
+The database is PostgreSQL. 
+- First, create a database through any administration and development platform of your choice.
+- Create a `.env` file with the properties as indicated in the `.env.example` from the `root` directory.
+- Assign values to the mentioned keys in the `.env` file according to the database you created, so we can now establish a connection with the database.
+- Finally, run the following command to create tables in it:
+
+```bash
+yarn migration:run
+```
+
+If you ever want to Drop all the existing tables in the database, use: 
+
+```bash
+yarn schema:drop
+```
+
+## Authentication and Authorization
+For authentication and Authorization, Passport-Local and Passport-Jwt is applied to the API. For this we need a secret key before starting the application, please remember to provide a `Secret Key` for `JWT_SECRETY_KEY` in the `.env` file.
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+$ yarn start
 
 # watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ yarn start:dev
 ```
 
+To be able to access the Swagger documentation, browse to: 
+```bash
+http://localhost:3000/swagger
+```
+**Kind reminder**: Swagger UI provides a way to authorize in the top right corner after you log in and get your access token. This is important, since some of the endpoints requires authentication before to be called.
+
 ## Test
+Unit tests can be easily ran by using the following command
 
 ```bash
 # unit tests
-$ npm run test
+$ yarn test
+```
+This next command can show the coverage of the unit tests for each entity
 
-# e2e tests
-$ npm run test:e2e
-
+```bash
 # test coverage
-$ npm run test:cov
+$ yarn test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

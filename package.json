@@ -23,7 +23,8 @@
     "migration:generate": "yarn typeorm migration:generate -d dist/database/data-source.js",
     "migration:run": "yarn typeorm migration:run -d dist/database/data-source.js",
     "migration:rever": "yarn typeorm migration:revert -d dist/database/data-source.js",
-    "schema:drop": "yarn typeorm schema:drop -d dist/database/data-source.js"
+    "schema:drop": "yarn typeorm schema:drop -d dist/database/data-source.js",
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -r dist/database -n seeds-data-source.js"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.3.5",
@@ -49,7 +50,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "0.3.11"
+    "typeorm": "0.3.11",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.2.0",

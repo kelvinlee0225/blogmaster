@@ -5,13 +5,11 @@ import { dataSourceOptions } from './data-source';
 
 type options = DataSourceOptions & {
   seeds: string[];
-  factories: string[];
 };
 
 const seedsDataSource: options = {
   ...dataSourceOptions,
-  seeds: ['src/database/seeds/*{.ts,.js}'],
-  factories: ['src/database/factories/**/*{.ts,.js}'],
+  seeds: ['dist/database/seeds/*.js'],
 };
 
 export default seedsDataSource;

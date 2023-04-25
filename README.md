@@ -25,7 +25,7 @@ yarn schema:drop
 ```
 
 ## Authentication and Authorization
-For authentication and Authorization, Passport-Local and Passport-Jwt is applied to the API. For this we need a secret key before starting the application, please remember to provide a `Secret Key` for `JWT_SECRETY_KEY` in the `.env` file.
+For authentication and authorization, Passport-Local and Passport-Jwt is applied to the API. For this we need a secret key before starting the application, please remember to provide a `Secret Key` for `JWT_SECRETY_KEY` in the `.env` file.
 
 ## Seeder
 If you want to have an user and a blog post created before running the app, you can run the following command to run the seeders:
